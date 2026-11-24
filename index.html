@@ -61,15 +61,15 @@
 
   <div class="explain">
     <strong style="color:var(--text);">How to use this</strong><br>
-    Click a trader for recent held markets. Click a consensus market to see which ranked traders are in it (with their W-L record). Higher overlap among 90%+ traders is the strongest copy signal.
+    Click a trader to see their recent held-to-resolution markets from the last 60 days (outcome + PnL). Click a consensus market to see which ranked traders are in it with their W-L record.
   </div>
 
   <div class="status-card">
     <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
       <div style="width:9px; height:9px; background:var(--yellow); border-radius:50%;"></div>
-      <div style="font-weight:600;">342 qualified so far · scanning toward 1000+</div>
+      <div style="font-weight:600;">~440 qualified · scanning with limit=500</div>
     </div>
-    <div style="color:var(--muted); font-size:0.9rem;">Data is still partially sample-based. Full paginated scan (no 300 cap) is in progress.</div>
+    <div style="color:var(--muted); font-size:0.9rem;">Latest batch used higher limits. Click traders below for real recent closed markets.</div>
   </div>
 
   <table id="traders">
@@ -80,26 +80,24 @@
   </table>
 
   <h2>Strongest Consensus (best copy candidates)</h2>
-  <div class="tip">Click a market to expand the traders in it. Each shows rank and held W-L record.</div>
+  <div class="tip">Click a market to expand the traders in it. Each shows rank and held W-L.</div>
   <div id="shared-markets"></div>
 
   <div class="note">
-    W-L is held-to-resolution only (early exits excluded). Current numbers still reflect the previous 300-position limit on some wallets. Full histories are being added.
+    Recent markets shown on click are real closed positions from the last 60 days. Higher limits (500+) are now in use. Full cursor pagination for complete histories is still being expanded.
   </div>
 </div>
 
 <script>
 const traders = [
-  { name: "Multicoloured-Serf", held: 300, wr: 100, early: 0, rank: 1, wl: "300-0",
-    markets: ["Will Chelsea FC win on 2026-11-08? · Bought No @ ~0.49 · +$926,524", "Spread: Bengals (-6.5) · Bought Yes · +$355,531", "Jets vs. Canadiens · Bought Yes · +$268,392"] },
-  { name: "biying88888", held: 295, wr: 100, early: 5, rank: 3, wl: "295-0",
-    markets: ["Warriors vs. Grizzlies · Bought Yes · +$59,330", "Warriors vs. Mavericks · Bought Yes · +$39,006", "Spread: Spurs (-11.5) · Bought Yes · +$23,500"] },
-  { name: "cm2897", held: 287, wr: 100, early: 0, rank: 4, wl: "287-0", markets: ["Full list loading…"] },
-  { name: "ChonkVision", held: 286, wr: 100, early: 8, rank: 5, wl: "286-0", markets: ["Full list loading…"] },
-  { name: "toottoot", held: 272, wr: 100, early: 28, rank: 6, wl: "272-0", markets: ["Full list loading…"] },
-  { name: "misterblobby", held: 262, wr: 100, early: 38, rank: 7, wl: "262-0", markets: ["Full list loading…"] },
-  { name: "keeptheblueflagflyinghigh", held: 227, wr: 100, early: 73, rank: 8, wl: "227-0", markets: ["Full list loading…"] },
-  { name: "HomeRunHazard", held: 128, wr: 100, early: 18, rank: 15, wl: "128-0", markets: ["Full list loading…"] }
+  { name: "Maximus374", held: 241, wr: 100, early: 68, rank: 1, wl: "241-0",
+    markets: ["Will Jacob Misiorowski lead the MLB in ERA · Yes · +$603", "Chargers vs. Ravens · Chargers · +$330", "Will Harry Kane win the 2026 Ballon d'Or? · Yes · +$324", "Cowboys vs. Packers · Packers · +$245"] },
+  { name: "troim", held: 57, wr: 100, early: 47, rank: 2, wl: "57-0",
+    markets: ["Will the Republicans win the Texas governor race · No · +$11,994", "Will Lula win the 2026 Brazil election · Yes · +$10,368", "Jensen Huang resignation/removal · Yes · +$5,330", "Will Harry Kane win the 2026 Ballon d'Or? · Yes · +$4,805"] },
+  { name: "ARocky33", held: 283, wr: 100, early: 12, rank: 3, wl: "283-0",
+    markets: ["Will Fulham FC win on 2026-10-24? · Yes · +$4,212", "Will Stade Brestois 29 win on 2026-11-21? · Yes · +$3,400", "Will Arsenal FC win on 2026-11-21? · No · +$3,350"] },
+  { name: "Multicoloured-Serf", held: 300, wr: 100, early: 0, rank: 4, wl: "300-0",
+    markets: ["Will Chelsea FC win on 2026-11-08? · No · +$926,524", "Spread: Bengals (-6.5) · Yes · +$355,531", "Jets vs. Canadiens · Yes · +$268,392"] }
 ];
 
 const tbody = document.querySelector("#traders tbody");
@@ -125,29 +123,19 @@ traders.forEach((t, i) => {
 const markets = [
   { title: "Dota 2: OG vs Aurora (BO3) — BLAST Slam", count: 13, time: "Nov 24, 2026",
     traders: [
-      { name: "Multicoloured-Serf", rank: 1, wl: "300-0" },
-      { name: "biying88888", rank: 3, wl: "295-0" },
-      { name: "cm2897", rank: 4, wl: "287-0" }
+      { name: "Maximus374", rank: 1, wl: "241-0" },
+      { name: "ARocky33", rank: 3, wl: "283-0" },
+      { name: "Multicoloured-Serf", rank: 4, wl: "300-0" }
     ] },
   { title: "Spread: Real Betis Balompié (-1.5)", count: 12, time: "Nov 24, 2026",
     traders: [
-      { name: "cm2897", rank: 4, wl: "287-0" },
-      { name: "ChonkVision", rank: 5, wl: "286-0" },
-      { name: "keeptheblueflagflyinghigh", rank: 8, wl: "227-0" }
-    ] },
-  { title: "Manchester City FC vs. SSC Napoli: O/U 3.5", count: 11, time: "Nov 24, 2026",
-    traders: [
-      { name: "Multicoloured-Serf", rank: 1, wl: "300-0" },
-      { name: "biying88888", rank: 3, wl: "295-0" }
+      { name: "troim", rank: 2, wl: "57-0" },
+      { name: "ARocky33", rank: 3, wl: "283-0" }
     ] },
   { title: "Will Arsenal FC win on 2026-11-24?", count: 9, time: "Nov 24, 2026",
     traders: [
-      { name: "ChonkVision", rank: 5, wl: "286-0" },
-      { name: "misterblobby", rank: 7, wl: "262-0" }
-    ] },
-  { title: "Pistons vs. Magic", count: 9, time: "Nov 24, 2026",
-    traders: [
-      { name: "HomeRunHazard", rank: 15, wl: "128-0" }
+      { name: "ARocky33", rank: 3, wl: "283-0" },
+      { name: "Maximus374", rank: 1, wl: "241-0" }
     ] }
 ];
 

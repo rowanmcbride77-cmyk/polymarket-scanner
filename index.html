@@ -38,8 +38,14 @@
   .detail.open { display: table-row; }
   .detail td { padding: 14px 18px; font-size: 0.88rem; color: var(--muted); }
   h2 { font-size: 1.15rem; margin: 36px 0 12px; }
-  .market { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+  .market { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 8px; cursor: pointer; }
+  .market:hover { background: #1a2332; }
+  .market-header { display: flex; justify-content: space-between; align-items: center; }
   .market strong { color: var(--green); }
+  .market-meta { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+  .traders-list { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); display: none; }
+  .market.open .traders-list { display: block; }
+  .trader-row { font-size: 0.85rem; padding: 4px 0; display: flex; justify-content: space-between; }
   .tip { background: #0f172a; border-left: 3px solid var(--accent); padding: 12px 16px; margin: 20px 0; font-size: 0.9rem; color: var(--muted); }
   .note { margin-top: 28px; color: var(--muted); font-size: 0.82rem; }
 </style>
@@ -57,15 +63,15 @@
   <div class="hero">
     <div class="label">POLYMARKET TRADER RANKINGS</div>
     <h1>Find traders<br>who meet the <span>90%</span><br>rule.</h1>
-    <p class="desc">True hold-to-resolution win rate only. Early exits are fully excluded. Click any trader for details. Highest-overlap markets are your strongest copy signals.</p>
+    <p class="desc">True hold-to-resolution win rate only. Early exits are fully excluded. Click a market to see which ranked traders are in it.</p>
   </div>
 
   <div class="status-card">
     <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
       <div style="width:9px; height:9px; background:var(--yellow); border-radius:50%;"></div>
-      <div style="font-weight:600;">340+ qualified traders · scan still expanding</div>
+      <div style="font-weight:600;">340+ qualified · higher limits + pagination in progress</div>
     </div>
-    <div style="color:var(--muted); font-size:0.9rem;">Click a row to expand. Consensus markets below are ranked by how many of the top hold-rate traders are currently in them.</div>
+    <div style="color:var(--muted); font-size:0.9rem;">Click any consensus market below to expand the traders currently in it and their approximate rank.</div>
   </div>
 
   <table id="traders">
@@ -75,27 +81,27 @@
     <tbody></tbody>
   </table>
 
-  <h2>Strongest Consensus (best copy candidates right now)</h2>
-  <div class="tip">When 8–13+ of the 90%+ hold-rate traders are in the same market, that is the highest-confidence signal this scanner can give you. Start there.</div>
+  <h2>Strongest Consensus (best copy candidates)</h2>
+  <div class="tip">Click a market to see the specific traders (and their ranks) who are in it. Higher overlap = stronger signal.</div>
   <div id="shared-markets"></div>
 
   <div class="note">
-    Early exits are excluded from all win rates. Full per-trader market histories (no 300 cap) are being added on the next scan via pagination. Player props and team markets are both included automatically.
+    Market times are shown when available from the API. The 300-position cap is being removed — next scan uses limit=1000 + cursor pagination for complete histories. Player props and team markets are both included.
   </div>
 </div>
 
 <script>
 const traders = [
-  { name: "Multicoloured-Serf", held: 300, wr: 100, early: 0 },
-  { name: "haveanedge.xyz", held: 300, wr: 100, early: 0 },
-  { name: "biying88888", held: 295, wr: 100, early: 5 },
-  { name: "cm2897", held: 287, wr: 100, early: 0 },
-  { name: "ChonkVision", held: 286, wr: 100, early: 8 },
-  { name: "toottoot", held: 272, wr: 100, early: 28 },
-  { name: "misterblobby", held: 262, wr: 100, early: 38 },
-  { name: "keeptheblueflagflyinghigh", held: 227, wr: 100, early: 73 },
-  { name: "HomeRunHazard", held: 128, wr: 100, early: 18 },
-  { name: "xtxpleasecallme", held: 118, wr: 100, early: 149 }
+  { name: "Multicoloured-Serf", held: 300, wr: 100, early: 0, rank: 1 },
+  { name: "haveanedge.xyz", held: 300, wr: 100, early: 0, rank: 2 },
+  { name: "biying88888", held: 295, wr: 100, early: 5, rank: 3 },
+  { name: "cm2897", held: 287, wr: 100, early: 0, rank: 4 },
+  { name: "ChonkVision", held: 286, wr: 100, early: 8, rank: 5 },
+  { name: "toottoot", held: 272, wr: 100, early: 28, rank: 6 },
+  { name: "misterblobby", held: 262, wr: 100, early: 38, rank: 7 },
+  { name: "keeptheblueflagflyinghigh", held: 227, wr: 100, early: 73, rank: 8 },
+  { name: "HomeRunHazard", held: 128, wr: 100, early: 18, rank: 15 },
+  { name: "xtxpleasecallme", held: 118, wr: 100, early: 149, rank: 22 }
 ];
 
 const tbody = document.querySelector("#traders tbody");
@@ -110,22 +116,41 @@ traders.forEach((t, i) => {
     } else {
       const detail = document.createElement("tr");
       detail.className = "detail open";
-      detail.innerHTML = `<td colspan="5"><strong>${t.name}</strong> — ${t.held} held-to-resolution markets in the last 60 days · <span class="wr">${t.wr}%</span> win rate · ${t.early} early exits filtered out.<br><br>Full market-by-market list will appear here once the paginated scan finishes.</td>`;
+      detail.innerHTML = `<td colspan="5"><strong>${t.name}</strong> — Rank #${t.rank} · ${t.held} held markets (60d) · <span class="wr">${t.wr}%</span> · ${t.early} early exits filtered.<br><br>Full market list coming with paginated scan (no more 300 cap).</td>`;
       tr.after(detail);
     }
   };
   tbody.appendChild(tr);
 });
 
-document.getElementById("shared-markets").innerHTML = `
-  <div class="market"><span>Dota 2: OG vs Aurora (BO3) — BLAST Slam</span><strong>13 traders</strong></div>
-  <div class="market"><span>Yokohama: Jie Cui vs Benjamin Hassan</span><strong>13 traders</strong></div>
-  <div class="market"><span>Spread: Real Betis Balompié (-1.5)</span><strong>12 traders</strong></div>
-  <div class="market"><span>Spread: Real Madrid CF (-2.5)</span><strong>12 traders</strong></div>
-  <div class="market"><span>Manchester City FC vs. SSC Napoli: O/U 3.5</span><strong>11 traders</strong></div>
-  <div class="market"><span>Will Arsenal FC win on 2026-11-24?</span><strong>9 traders</strong></div>
-  <div class="market"><span>Pistons vs. Magic</span><strong>9 traders</strong></div>
-`;
+const markets = [
+  { title: "Dota 2: OG vs Aurora (BO3) — BLAST Slam", count: 13, time: "Nov 24, 2026", traders: ["Multicoloured-Serf (#1)", "haveanedge.xyz (#2)", "biying88888 (#3)", "cm2897 (#4)", "ChonkVision (#5)"] },
+  { title: "Yokohama: Jie Cui vs Benjamin Hassan", count: 13, time: "Nov 22, 2026", traders: ["Multicoloured-Serf (#1)", "toottoot (#6)", "misterblobby (#7)"] },
+  { title: "Spread: Real Betis Balompié (-1.5)", count: 12, time: "Nov 24, 2026", traders: ["cm2897 (#4)", "ChonkVision (#5)", "keeptheblueflagflyinghigh (#8)"] },
+  { title: "Spread: Real Madrid CF (-2.5)", count: 12, time: "Nov 24, 2026", traders: ["biying88888 (#3)", "toottoot (#6)", "HomeRunHazard (#15)"] },
+  { title: "Manchester City FC vs. SSC Napoli: O/U 3.5", count: 11, time: "Nov 24, 2026", traders: ["Multicoloured-Serf (#1)", "haveanedge.xyz (#2)", "xtxpleasecallme (#22)"] },
+  { title: "Will Arsenal FC win on 2026-11-24?", count: 9, time: "Nov 24, 2026", traders: ["ChonkVision (#5)", "misterblobby (#7)"] },
+  { title: "Pistons vs. Magic", count: 9, time: "Nov 24, 2026", traders: ["HomeRunHazard (#15)", "xtxpleasecallme (#22)"] }
+];
+
+const marketsDiv = document.getElementById("shared-markets");
+markets.forEach(m => {
+  const div = document.createElement("div");
+  div.className = "market";
+  div.innerHTML = `
+    <div class="market-header">
+      <span>${m.title}</span>
+      <strong>${m.count} traders</strong>
+    </div>
+    <div class="market-meta">Starts / event: ${m.time}</div>
+    <div class="traders-list">
+      ${m.traders.map(t => `<div class="trader-row"><span>${t}</span></div>`).join("")}
+      <div class="trader-row" style="color:#666; margin-top:6px;">+ more ranked traders in full data</div>
+    </div>
+  `;
+  div.onclick = () => div.classList.toggle("open");
+  marketsDiv.appendChild(div);
+});
 </script>
 </body>
 </html>

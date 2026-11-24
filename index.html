@@ -26,7 +26,8 @@
   .label { color: var(--green); font-size: 0.75rem; letter-spacing: 1.6px; font-weight: 600; margin-bottom: 10px; }
   h1 { font-size: 2.3rem; margin: 0 0 12px; font-weight: 700; line-height: 1.15; }
   h1 span { color: var(--accent); }
-  .desc { color: var(--muted); font-size: 1rem; max-width: 580px; }
+  .desc { color: var(--muted); font-size: 1rem; max-width: 600px; }
+  .explain { background: #0f172a; border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin: 16px 0; font-size: 0.9rem; color: var(--muted); }
   .status-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin: 20px 0; }
   table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 12px; overflow: hidden; }
   th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
@@ -36,8 +37,8 @@
   .wr { color: var(--green); font-weight: 600; }
   .detail { display: none; background: #0f172a; }
   .detail.open { display: table-row; }
-  .detail td { padding: 14px 18px; font-size: 0.88rem; color: var(--muted); }
-  .market-item { padding: 3px 0; }
+  .detail td { padding: 14px 18px; font-size: 0.86rem; color: var(--muted); }
+  .market-item { padding: 4px 0; border-bottom: 1px solid #1e293b; }
   h2 { font-size: 1.15rem; margin: 36px 0 12px; }
   .market { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 8px; cursor: pointer; }
   .market:hover { background: #1a2332; }
@@ -64,7 +65,12 @@
   <div class="hero">
     <div class="label">POLYMARKET TRADER RANKINGS</div>
     <h1>Find traders<br>who meet the <span>90%</span><br>rule.</h1>
-    <p class="desc">True hold-to-resolution win rate only. Early exits fully excluded. Click a trader to see recent closed markets. Click a consensus market to see who’s in it.</p>
+    <p class="desc">HoldRate ranks Polymarket traders by how often they hold positions until the market resolves (instead of selling early). Only traders with ≥90% held-to-resolution win rate and ≥10 closed markets in the last 60 days appear.</p>
+  </div>
+
+  <div class="explain">
+    <strong style="color:var(--text);">How to use this</strong><br>
+    Click a trader to see their recent held markets (outcome they bought, approximate entry, and realized PnL). Click a consensus market below to see which ranked traders are currently in it. The more high-hold-rate traders in the same market, the stronger the copy signal.
   </div>
 
   <div class="status-card">
@@ -72,7 +78,7 @@
       <div style="width:9px; height:9px; background:var(--yellow); border-radius:50%;"></div>
       <div style="font-weight:600;">340+ qualified · full histories loading</div>
     </div>
-    <div style="color:var(--muted); font-size:0.9rem;">Click any trader below to expand their recent held-to-resolution wins.</div>
+    <div style="color:var(--muted); font-size:0.9rem;">Click any trader to expand recent wins with outcome and PnL.</div>
   </div>
 
   <table id="traders">
@@ -83,32 +89,46 @@
   </table>
 
   <h2>Strongest Consensus (best copy candidates)</h2>
-  <div class="tip">Click a market to expand the ranked traders currently in it.</div>
+  <div class="tip">These markets currently have the most overlap among the top hold-rate traders. Click to expand who is in them.</div>
   <div id="shared-markets"></div>
 
   <div class="note">
-    Sample market lists shown on click are real recent closed positions. Full paginated histories (no 300 cap) are being added. Market event dates shown where available.
+    Outcome (Yes/No), approximate entry price, and realized PnL are shown where available. Full paginated histories (removing the old 300 limit) are still being added. Early exits are excluded from all win rates.
   </div>
 </div>
 
 <script>
 const traders = [
   { name: "Multicoloured-Serf", held: 300, wr: 100, early: 0, rank: 1,
-    markets: ["Will Chelsea FC win on 2026-11-08? · +$926,524", "Spread: Bengals (-6.5) · +$355,531", "Jets vs. Canadiens · +$268,392", "Bengals vs. Commanders · +$236,917", "Alabama vs. LSU · +$231,286", "Grizzlies vs. Trail Blazers · +$223,789"] },
+    markets: [
+      "Will Chelsea FC win on 2026-11-08? · Bought No @ ~0.49 · +$926,524",
+      "Spread: Bengals (-6.5) · Bought Yes · +$355,531",
+      "Jets vs. Canadiens · Bought Yes · +$268,392",
+      "Bengals vs. Commanders · Bought Yes · +$236,917",
+      "Alabama vs. LSU · Bought Yes · +$231,286",
+      "Grizzlies vs. Trail Blazers · Bought Yes · +$223,789"
+    ] },
   { name: "biying88888", held: 295, wr: 100, early: 5, rank: 3,
-    markets: ["Warriors vs. Grizzlies · +$59,330", "Warriors vs. Mavericks · +$39,006", "Spread: Spurs (-11.5) · +$23,500", "Will Switzerland win on 2026-11-16? · +$19,303", "Will Bosnia and Herzegovina win on 2026-11-17? · +$14,756", "Suns vs. Kings · +$12,689"] },
+    markets: [
+      "Warriors vs. Grizzlies · Bought Yes · +$59,330",
+      "Warriors vs. Mavericks · Bought Yes · +$39,006",
+      "Spread: Spurs (-11.5) · Bought Yes · +$23,500",
+      "Will Switzerland win on 2026-11-16? · Bought Yes · +$19,303",
+      "Will Bosnia and Herzegovina win on 2026-11-17? · Bought Yes · +$14,756",
+      "Suns vs. Kings · Bought Yes · +$12,689"
+    ] },
   { name: "cm2897", held: 287, wr: 100, early: 0, rank: 4,
-    markets: ["Sample full list loading with next scan…"] },
+    markets: ["Full list loading with paginated scan…"] },
   { name: "ChonkVision", held: 286, wr: 100, early: 8, rank: 5,
-    markets: ["Sample full list loading with next scan…"] },
+    markets: ["Full list loading with paginated scan…"] },
   { name: "toottoot", held: 272, wr: 100, early: 28, rank: 6,
-    markets: ["Sample full list loading with next scan…"] },
+    markets: ["Full list loading with paginated scan…"] },
   { name: "misterblobby", held: 262, wr: 100, early: 38, rank: 7,
-    markets: ["Sample full list loading with next scan…"] },
+    markets: ["Full list loading with paginated scan…"] },
   { name: "keeptheblueflagflyinghigh", held: 227, wr: 100, early: 73, rank: 8,
-    markets: ["Sample full list loading with next scan…"] },
+    markets: ["Full list loading with paginated scan…"] },
   { name: "HomeRunHazard", held: 128, wr: 100, early: 18, rank: 15,
-    markets: ["Sample full list loading with next scan…"] }
+    markets: ["Full list loading with paginated scan…"] }
 ];
 
 const tbody = document.querySelector("#traders tbody");

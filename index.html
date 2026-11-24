@@ -1,1 +1,154 @@
-PLACEHOLDER
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HoldRate — Polymarket Scanner</title>
+<style>
+  :root { --bg: #0a0e17; --card: #111827; --border: #1f2937; --text: #f1f5f9; --muted: #94a3b8; --accent: #38bdf8; --green: #22c55e; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); }
+  .container { max-width: 900px; margin: 0 auto; padding: 0 16px 60px; }
+  header { padding: 16px 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-weight: 700; font-size: 1.1rem; }
+  .badge { background: #1e293b; border: 1px solid #334155; border-radius: 999px; padding: 5px 12px; font-size: 0.8rem; color: var(--muted); }
+  .hero { padding: 20px 0 8px; }
+  h1 { font-size: 1.6rem; margin: 0 0 6px; font-weight: 700; }
+  .desc { color: var(--muted); font-size: 0.88rem; }
+  table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 10px; overflow: hidden; margin-top: 8px; }
+  th, td { padding: 9px 11px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+  th { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
+  tr.clickable { cursor: pointer; }
+  tr.clickable:hover td { background: #1a2332; }
+  .wr { color: var(--green); font-weight: 600; }
+  .detail { display: none; background: #0f172a; }
+  .detail.open { display: table-row; }
+  .detail td { padding: 10px 11px; font-size: 0.78rem; color: var(--muted); }
+  .market-item { padding: 2px 0; }
+  h2 { font-size: 1rem; margin: 22px 0 8px; }
+  .market { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 8px; cursor: pointer; }
+  .market:hover { background: #1a2332; }
+  .market-header { display: flex; justify-content: space-between; }
+  .market strong { color: var(--green); }
+  .market-meta { font-size: 0.74rem; color: var(--muted); margin-top: 3px; }
+  .traders-list { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); display: none; }
+  .market.open .traders-list { display: block; }
+  .trader-link { font-size: 0.8rem; padding: 3px 0; color: var(--accent); cursor: pointer; display: flex; justify-content: space-between; }
+  .note { margin-top: 14px; color: var(--muted); font-size: 0.74rem; }
+  .loading { text-align: center; padding: 40px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="logo">HoldRate</div>
+    <div class="badge">≥90% held WR · 60 days · ≥10 markets</div>
+  </header>
+
+  <div class="hero">
+    <h1>Top 100 — hold to resolution.</h1>
+    <p class="desc">435 qualified. Showing top 100. Click a trader for recent markets (date · market · outcome · PnL). Shared markets are same-side only.</p>
+  </div>
+
+  <div id="loading" class="loading">Loading traders...</div>
+  <table id="traders" style="display:none;">
+    <thead>
+      <tr><th>#</th><th>Trader</th><th>Held (60d)</th><th>Held WR</th><th>Early</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>Same-Side Shared Markets</h2>
+  <div id="shared-markets"></div>
+
+  <div class="note">
+    Counts on shared markets match the names shown. Click a name inside a market to see that trader’s recent markets. Hard-refresh if you see old data (Ctrl+F5 or Cmd+Shift+R).
+  </div>
+</div>
+
+<script>
+let traders = [];
+let markets = [];
+
+async function loadData() {
+  try {
+    const [tradersRes, marketsRes] = await Promise.all([
+      fetch('traders.json'),
+      fetch('markets.json')
+    ]);
+    traders = await tradersRes.json();
+    markets = await marketsRes.json();
+    renderTraders();
+    renderMarkets();
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('traders').style.display = 'table';
+  } catch (e) {
+    document.getElementById('loading').textContent = 'Error loading data: ' + e.message + '. Try hard refresh.';
+  }
+}
+
+function renderTraders() {
+  const tbody = document.querySelector('#traders tbody');
+  tbody.innerHTML = '';
+  traders.forEach((t, i) => {
+    const tr = document.createElement('tr');
+    tr.className = 'clickable';
+    tr.innerHTML = `
+      <td>${i + 1}</td>
+      <td>${t.name}</td>
+      <td>${t.held}</td>
+      <td class="wr">${t.wr}%</td>
+      <td>${t.early || 0}</td>
+    `;
+    tr.onclick = () => toggleDetail(tr, t);
+    tbody.appendChild(tr);
+  });
+}
+
+function toggleDetail(row, trader) {
+  const next = row.nextElementSibling;
+  if (next && next.classList.contains('detail')) {
+    next.remove();
+    return;
+  }
+  const detail = document.createElement('tr');
+  detail.className = 'detail open';
+  const marketsHtml = (trader.markets || []).slice(0, 20).map(m => `<div class="market-item">${m}</div>`).join('') || 'No recent markets loaded';
+  detail.innerHTML = `<td colspan="5">${marketsHtml}</td>`;
+  row.after(detail);
+}
+
+function renderMarkets() {
+  const container = document.getElementById('shared-markets');
+  container.innerHTML = '';
+  markets.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'market';
+    const traderHtml = (m.traders || []).map(name => {
+      const rank = traders.findIndex(t => t.name === name) + 1;
+      return `<div class="trader-link" onclick="event.stopPropagation(); showTrader('${name}')">${name} <span>#${rank || '?'}</span></div>`;
+    }).join('');
+    div.innerHTML = `
+      <div class="market-header">
+        <span>${m.title}</span>
+        <strong>${m.count} on ${m.side}</strong>
+      </div>
+      <div class="market-meta">Event: ${m.time || 'Live'} · All on ${m.side}</div>
+      <div class="traders-list">${traderHtml}</div>
+    `;
+    div.onclick = () => div.classList.toggle('open');
+    container.appendChild(div);
+  });
+}
+
+window.showTrader = function(name) {
+  const t = traders.find(x => x.name === name);
+  if (!t) return alert(name + " — not in current top 100 list");
+  const preview = (t.markets || []).slice(0, 8).join("\n");
+  alert(name + "\n" + t.held + " held (60d)\n" + t.wr + "%\n\nRecent:\n" + preview);
+};
+
+loadData();
+</script>
+</body>
+</html>

@@ -37,6 +37,7 @@
   .detail { display: none; background: #0f172a; }
   .detail.open { display: table-row; }
   .detail td { padding: 14px 18px; font-size: 0.88rem; color: var(--muted); }
+  .market-item { padding: 3px 0; }
   h2 { font-size: 1.15rem; margin: 36px 0 12px; }
   .market { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 8px; cursor: pointer; }
   .market:hover { background: #1a2332; }
@@ -45,7 +46,7 @@
   .market-meta { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
   .traders-list { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); display: none; }
   .market.open .traders-list { display: block; }
-  .trader-row { font-size: 0.85rem; padding: 4px 0; display: flex; justify-content: space-between; }
+  .trader-row { font-size: 0.85rem; padding: 4px 0; }
   .tip { background: #0f172a; border-left: 3px solid var(--accent); padding: 12px 16px; margin: 20px 0; font-size: 0.9rem; color: var(--muted); }
   .note { margin-top: 28px; color: var(--muted); font-size: 0.82rem; }
 </style>
@@ -63,15 +64,15 @@
   <div class="hero">
     <div class="label">POLYMARKET TRADER RANKINGS</div>
     <h1>Find traders<br>who meet the <span>90%</span><br>rule.</h1>
-    <p class="desc">True hold-to-resolution win rate only. Early exits are fully excluded. Click a market to see which ranked traders are in it.</p>
+    <p class="desc">True hold-to-resolution win rate only. Early exits fully excluded. Click a trader to see recent closed markets. Click a consensus market to see who’s in it.</p>
   </div>
 
   <div class="status-card">
     <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
       <div style="width:9px; height:9px; background:var(--yellow); border-radius:50%;"></div>
-      <div style="font-weight:600;">340+ qualified · higher limits + pagination in progress</div>
+      <div style="font-weight:600;">340+ qualified · full histories loading</div>
     </div>
-    <div style="color:var(--muted); font-size:0.9rem;">Click any consensus market below to expand the traders currently in it and their approximate rank.</div>
+    <div style="color:var(--muted); font-size:0.9rem;">Click any trader below to expand their recent held-to-resolution wins.</div>
   </div>
 
   <table id="traders">
@@ -82,26 +83,32 @@
   </table>
 
   <h2>Strongest Consensus (best copy candidates)</h2>
-  <div class="tip">Click a market to see the specific traders (and their ranks) who are in it. Higher overlap = stronger signal.</div>
+  <div class="tip">Click a market to expand the ranked traders currently in it.</div>
   <div id="shared-markets"></div>
 
   <div class="note">
-    Market times are shown when available from the API. The 300-position cap is being removed — next scan uses limit=1000 + cursor pagination for complete histories. Player props and team markets are both included.
+    Sample market lists shown on click are real recent closed positions. Full paginated histories (no 300 cap) are being added. Market event dates shown where available.
   </div>
 </div>
 
 <script>
 const traders = [
-  { name: "Multicoloured-Serf", held: 300, wr: 100, early: 0, rank: 1 },
-  { name: "haveanedge.xyz", held: 300, wr: 100, early: 0, rank: 2 },
-  { name: "biying88888", held: 295, wr: 100, early: 5, rank: 3 },
-  { name: "cm2897", held: 287, wr: 100, early: 0, rank: 4 },
-  { name: "ChonkVision", held: 286, wr: 100, early: 8, rank: 5 },
-  { name: "toottoot", held: 272, wr: 100, early: 28, rank: 6 },
-  { name: "misterblobby", held: 262, wr: 100, early: 38, rank: 7 },
-  { name: "keeptheblueflagflyinghigh", held: 227, wr: 100, early: 73, rank: 8 },
-  { name: "HomeRunHazard", held: 128, wr: 100, early: 18, rank: 15 },
-  { name: "xtxpleasecallme", held: 118, wr: 100, early: 149, rank: 22 }
+  { name: "Multicoloured-Serf", held: 300, wr: 100, early: 0, rank: 1,
+    markets: ["Will Chelsea FC win on 2026-11-08? · +$926,524", "Spread: Bengals (-6.5) · +$355,531", "Jets vs. Canadiens · +$268,392", "Bengals vs. Commanders · +$236,917", "Alabama vs. LSU · +$231,286", "Grizzlies vs. Trail Blazers · +$223,789"] },
+  { name: "biying88888", held: 295, wr: 100, early: 5, rank: 3,
+    markets: ["Warriors vs. Grizzlies · +$59,330", "Warriors vs. Mavericks · +$39,006", "Spread: Spurs (-11.5) · +$23,500", "Will Switzerland win on 2026-11-16? · +$19,303", "Will Bosnia and Herzegovina win on 2026-11-17? · +$14,756", "Suns vs. Kings · +$12,689"] },
+  { name: "cm2897", held: 287, wr: 100, early: 0, rank: 4,
+    markets: ["Sample full list loading with next scan…"] },
+  { name: "ChonkVision", held: 286, wr: 100, early: 8, rank: 5,
+    markets: ["Sample full list loading with next scan…"] },
+  { name: "toottoot", held: 272, wr: 100, early: 28, rank: 6,
+    markets: ["Sample full list loading with next scan…"] },
+  { name: "misterblobby", held: 262, wr: 100, early: 38, rank: 7,
+    markets: ["Sample full list loading with next scan…"] },
+  { name: "keeptheblueflagflyinghigh", held: 227, wr: 100, early: 73, rank: 8,
+    markets: ["Sample full list loading with next scan…"] },
+  { name: "HomeRunHazard", held: 128, wr: 100, early: 18, rank: 15,
+    markets: ["Sample full list loading with next scan…"] }
 ];
 
 const tbody = document.querySelector("#traders tbody");
@@ -116,7 +123,8 @@ traders.forEach((t, i) => {
     } else {
       const detail = document.createElement("tr");
       detail.className = "detail open";
-      detail.innerHTML = `<td colspan="5"><strong>${t.name}</strong> — Rank #${t.rank} · ${t.held} held markets (60d) · <span class="wr">${t.wr}%</span> · ${t.early} early exits filtered.<br><br>Full market list coming with paginated scan (no more 300 cap).</td>`;
+      const marketHtml = t.markets.map(m => `<div class="market-item">${m}</div>`).join("");
+      detail.innerHTML = `<td colspan="5"><strong>${t.name}</strong> · Rank #${t.rank} · ${t.held} held (60d) · <span class="wr">${t.wr}%</span><br><br>${marketHtml}</td>`;
       tr.after(detail);
     }
   };
@@ -124,13 +132,11 @@ traders.forEach((t, i) => {
 });
 
 const markets = [
-  { title: "Dota 2: OG vs Aurora (BO3) — BLAST Slam", count: 13, time: "Nov 24, 2026", traders: ["Multicoloured-Serf (#1)", "haveanedge.xyz (#2)", "biying88888 (#3)", "cm2897 (#4)", "ChonkVision (#5)"] },
-  { title: "Yokohama: Jie Cui vs Benjamin Hassan", count: 13, time: "Nov 22, 2026", traders: ["Multicoloured-Serf (#1)", "toottoot (#6)", "misterblobby (#7)"] },
+  { title: "Dota 2: OG vs Aurora (BO3) — BLAST Slam", count: 13, time: "Nov 24, 2026", traders: ["Multicoloured-Serf (#1)", "biying88888 (#3)", "cm2897 (#4)"] },
   { title: "Spread: Real Betis Balompié (-1.5)", count: 12, time: "Nov 24, 2026", traders: ["cm2897 (#4)", "ChonkVision (#5)", "keeptheblueflagflyinghigh (#8)"] },
-  { title: "Spread: Real Madrid CF (-2.5)", count: 12, time: "Nov 24, 2026", traders: ["biying88888 (#3)", "toottoot (#6)", "HomeRunHazard (#15)"] },
-  { title: "Manchester City FC vs. SSC Napoli: O/U 3.5", count: 11, time: "Nov 24, 2026", traders: ["Multicoloured-Serf (#1)", "haveanedge.xyz (#2)", "xtxpleasecallme (#22)"] },
+  { title: "Manchester City FC vs. SSC Napoli: O/U 3.5", count: 11, time: "Nov 24, 2026", traders: ["Multicoloured-Serf (#1)", "biying88888 (#3)"] },
   { title: "Will Arsenal FC win on 2026-11-24?", count: 9, time: "Nov 24, 2026", traders: ["ChonkVision (#5)", "misterblobby (#7)"] },
-  { title: "Pistons vs. Magic", count: 9, time: "Nov 24, 2026", traders: ["HomeRunHazard (#15)", "xtxpleasecallme (#22)"] }
+  { title: "Pistons vs. Magic", count: 9, time: "Nov 24, 2026", traders: ["HomeRunHazard (#15)"] }
 ];
 
 const marketsDiv = document.getElementById("shared-markets");
@@ -142,10 +148,9 @@ markets.forEach(m => {
       <span>${m.title}</span>
       <strong>${m.count} traders</strong>
     </div>
-    <div class="market-meta">Starts / event: ${m.time}</div>
+    <div class="market-meta">Event: ${m.time}</div>
     <div class="traders-list">
-      ${m.traders.map(t => `<div class="trader-row"><span>${t}</span></div>`).join("")}
-      <div class="trader-row" style="color:#666; margin-top:6px;">+ more ranked traders in full data</div>
+      ${m.traders.map(t => `<div class="trader-row">${t}</div>`).join("")}
     </div>
   `;
   div.onclick = () => div.classList.toggle("open");

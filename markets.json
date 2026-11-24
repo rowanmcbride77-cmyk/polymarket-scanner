@@ -1,0 +1,140 @@
+[
+  {
+    "title": "Bitcoin Up or Down - November 24, 5:25PM-5:30PM ET",
+    "side": "Up",
+    "count": 13,
+    "traders": [
+      "blue.birds",
+      "arcsine-barrister",
+      "sharpe-shooter",
+      "0x484e5213d4b75147fd92a0df0e8c7bbcc2ce8e9c",
+      "coub-meeb-kich-raic",
+      "Ijustmightmakeit",
+      "0xE4a4ca44f6Ac9bcD5B08e5234F64bed37837e4C6-1783036812103",
+      "0x855e484854D1411B959dDffddA11A698566C5189-1780249997359"
+    ]
+  },
+  {
+    "title": "Bitcoin Up or Down - November 24, 5:25PM-5:30PM ET",
+    "side": "Down",
+    "count": 10,
+    "traders": [
+      "blue.birds",
+      "arcsine-barrister",
+      "sharpe-shooter",
+      "0x484e5213d4b75147fd92a0df0e8c7bbcc2ce8e9c",
+      "coub-meeb-kich-raic",
+      "0xE4a4ca44f6Ac9bcD5B08e5234F64bed37837e4C6-1783036812103",
+      "0x855e484854D1411B959dDffddA11A698566C5189-1780249997359",
+      "Atomforge"
+    ]
+  },
+  {
+    "title": "Bitcoin Up or Down - November 24, 5:15PM-5:30PM ET",
+    "side": "Up",
+    "count": 6,
+    "traders": [
+      "blue.birds",
+      "coub-meeb-kich-raic",
+      "Atomforge",
+      "0x502b532F55778c0985846Dc53a9bc71eB4F33b15-1761320484518",
+      "0x0dbd0e1d5999a401263dc26cbf1597f2be0cfcd5-1793622023710",
+      "0x1bc32be106439240f59aa25668e613831a5cdc6e"
+    ]
+  },
+  {
+    "title": "Mavericks vs. Nuggets",
+    "side": "Nuggets",
+    "count": 4,
+    "traders": [
+      "Tomahawkmaster",
+      "Multicoloured-Serf",
+      "toottoot",
+      "darkumbreon88"
+    ]
+  },
+  {
+    "title": "Pistons vs. Magic",
+    "side": "Magic",
+    "count": 4,
+    "traders": [
+      "strawberrycreek",
+      "Tomahawkmaster",
+      "0x8efa1ea8ee2d456a051ae2985079a1e3c9aa894c",
+      "0x8g68hBa8tyH1946Bhjb674g3fuyUIGYUi4uhflks"
+    ]
+  },
+  {
+    "title": "Will Rayo Vallecano de Madrid win on 2026-10-10?",
+    "side": "Yes",
+    "count": 4,
+    "traders": [
+      "yoyoyoyoyoyoyoyoyoyoyoyoyoyoyo",
+      "0x8efa1ea8ee2d456a051ae2985079a1e3c9aa894c",
+      "Kyn008",
+      "darkumbreon88"
+    ]
+  },
+  {
+    "title": "Celtics vs. Wizards",
+    "side": "Celtics",
+    "count": 4,
+    "traders": [
+      "Tomahawkmaster",
+      "Multicoloured-Serf",
+      "0x8g68hBa8tyH1946Bhjb674g3fuyUIGYUi4uhflks",
+      "toottoot"
+    ]
+  },
+  {
+    "title": "Golden Knights vs. Oilers: O/U 6.5",
+    "side": "Under",
+    "count": 4,
+    "traders": [
+      "Multicoloured-Serf",
+      "0x8g68hBa8tyH1946Bhjb674g3fuyUIGYUi4uhflks",
+      "toottoot",
+      "misterblobby"
+    ]
+  },
+  {
+    "title": "Bitcoin Up or Down - November 24, 5:30PM-5:35PM ET",
+    "side": "Up",
+    "count": 3,
+    "traders": [
+      "arcsine-barrister",
+      "sharpe-shooter",
+      "0x484e5213d4b75147fd92a0df0e8c7bbcc2ce8e9c"
+    ]
+  },
+  {
+    "title": "Bitcoin Up or Down - November 24, 5:30PM-5:35PM ET",
+    "side": "Down",
+    "count": 3,
+    "traders": [
+      "arcsine-barrister",
+      "sharpe-shooter",
+      "0x484e5213d4b75147fd92a0df0e8c7bbcc2ce8e9c"
+    ]
+  },
+  {
+    "title": "Heat vs. 76ers",
+    "side": "76ers",
+    "count": 3,
+    "traders": [
+      "strawberrycreek",
+      "Tomahawkmaster",
+      "MatrixAttack"
+    ]
+  },
+  {
+    "title": "Will Athletic Club win on 2026-10-10?",
+    "side": "No",
+    "count": 3,
+    "traders": [
+      "yoyoyoyoyoyoyoyoyoyoyoyoyoyoyo",
+      "0x8efa1ea8ee2d456a051ae2985079a1e3c9aa894c",
+      "Kyn008"
+    ]
+  }
+]

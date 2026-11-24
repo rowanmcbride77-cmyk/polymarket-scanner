@@ -12,30 +12,30 @@
   header { padding: 16px 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
   .logo { font-weight: 700; font-size: 1.1rem; }
   .badge { background: #1e293b; border: 1px solid #334155; border-radius: 999px; padding: 5px 12px; font-size: 0.8rem; color: var(--muted); }
-  .hero { padding: 28px 0 12px; }
-  h1 { font-size: 1.8rem; margin: 0 0 8px; font-weight: 700; line-height: 1.2; }
+  .hero { padding: 24px 0 10px; }
+  h1 { font-size: 1.7rem; margin: 0 0 6px; font-weight: 700; }
   h1 span { color: var(--accent); }
-  .desc { color: var(--muted); font-size: 0.92rem; }
-  table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 10px; overflow: hidden; margin-top: 12px; }
+  .desc { color: var(--muted); font-size: 0.9rem; }
+  table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 10px; overflow: hidden; margin-top: 10px; }
   th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
-  th { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; }
+  th { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; }
   tr.clickable { cursor: pointer; }
   tr.clickable:hover td { background: #1a2332; }
   .wr { color: var(--green); font-weight: 600; }
   .detail { display: none; background: #0f172a; }
   .detail.open { display: table-row; }
-  .detail td { padding: 10px 12px; font-size: 0.82rem; color: var(--muted); }
+  .detail td { padding: 10px 12px; font-size: 0.8rem; color: var(--muted); }
   .market-item { padding: 2px 0; }
-  h2 { font-size: 1.05rem; margin: 28px 0 8px; }
+  h2 { font-size: 1rem; margin: 24px 0 8px; }
   .market { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 8px; cursor: pointer; }
   .market:hover { background: #1a2332; }
-  .market-header { display: flex; justify-content: space-between; align-items: center; }
+  .market-header { display: flex; justify-content: space-between; }
   .market strong { color: var(--green); }
-  .market-meta { font-size: 0.76rem; color: var(--muted); margin-top: 3px; }
+  .market-meta { font-size: 0.75rem; color: var(--muted); margin-top: 3px; }
   .traders-list { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); display: none; }
   .market.open .traders-list { display: block; }
-  .trader-link { font-size: 0.82rem; padding: 3px 0; color: var(--accent); cursor: pointer; display: flex; justify-content: space-between; }
-  .note { margin-top: 20px; color: var(--muted); font-size: 0.76rem; }
+  .trader-link { font-size: 0.8rem; padding: 3px 0; color: var(--accent); cursor: pointer; display: flex; justify-content: space-between; }
+  .note { margin-top: 16px; color: var(--muted); font-size: 0.75rem; }
 </style>
 </head>
 <body>
@@ -46,13 +46,13 @@
   </header>
 
   <div class="hero">
-    <h1>Traders who hold<br>to <span>resolution</span>.</h1>
-    <p class="desc">Only same-side consensus markets are shown. Opposite sides are excluded. Click a trader or market.</p>
+    <h1>Traders who hold to <span>resolution</span>.</h1>
+    <p class="desc">435 qualified. Top shown below. Click a trader for recent markets. Shared markets are same-side only.</p>
   </div>
 
   <table id="traders">
     <thead>
-      <tr><th>#</th><th>Trader</th><th>Held (60d)</th><th>Held WR</th></tr>
+      <tr><th>#</th><th>Trader</th><th>Held (60d)</th><th>Held WR</th><th>Early</th></tr>
     </thead>
     <tbody></tbody>
   </table>
@@ -61,29 +61,33 @@
   <div id="shared-markets"></div>
 
   <div class="note">
-    Only markets where multiple qualified traders are on the same side appear here. Scan is still expanding past the current list.
+    Held numbers under 400 are more likely accurate. Full market lists are still expanding. Only same-side consensus is shown.
   </div>
 </div>
 
 <script>
 const traders = [
-  { name: "Rocko33", held: 200, wr: 100, wl: "200-0", markets: ["Atalanta U23 vs Reggiana · Over · +$1,979", "Wolves exact score · Yes · +$1,609"] },
-  { name: "blue.birds", held: 200, wr: 100, wl: "200-0", markets: ["Bitcoin Up/Down · Down · +$1,471", "Bitcoin Up/Down · Down · +$1,306"] },
-  { name: "arcsine-barrister", held: 200, wr: 100, wl: "200-0", markets: ["Bitcoin Up/Down · Up · +$5,000"] },
-  { name: "sharpe-shooter", held: 200, wr: 100, wl: "200-0", markets: ["Recent markets loading…"] },
-  { name: "strawberrycreek", held: 200, wr: 100, wl: "200-0", markets: ["Recent markets loading…"] },
-  { name: "Tomahawkmaster", held: 150, wr: 100, wl: "150-0", markets: ["Recent markets loading…"] },
-  { name: "toottoot", held: 140, wr: 100, wl: "140-0", markets: ["Recent markets loading…"] },
-  { name: "darkumbreon88", held: 130, wr: 100, wl: "130-0", markets: ["Recent markets loading…"] },
-  { name: "Multicoloured-Serf", held: 120, wr: 100, wl: "120-0", markets: ["Recent markets loading…"] },
-  { name: "Atomforge", held: 110, wr: 100, wl: "110-0", markets: ["Recent markets loading…"] }
+  { name: "glennyorkshire", held: 390, wr: 100, early: 110, wl: "390-0",
+    markets: ["Spread: Bears (-6.5) · Buccaneers · +$15,035", "Will the Buffalo Bills win Super Bowl · No · +$8,420", "Chiefs vs. Broncos · Chiefs · +$6,110"] },
+  { name: "Tomahawkmaster", held: 380, wr: 100, early: 6, wl: "380-0",
+    markets: ["Trail Blazers vs. 76ers · Trail Blazers · +$2,800", "Lakers vs. Warriors · Lakers · +$1,950", "Nuggets vs. Mavericks · Nuggets · +$1,620"] },
+  { name: "FairValueMachine", held: 367, wr: 100, early: 0, wl: "367-0",
+    markets: ["Will Lula win 2026 Brazil · Yes · +$1,984", "Will Harry Kane win Ballon d'Or · Yes · +$1,450", "Will Republicans win Texas gov · No · +$980"] },
+  { name: "Multicoloured-Serf", held: 300, wr: 100, early: 0, wl: "300-0",
+    markets: ["Will Chelsea FC win · No · +$926,524", "Spread: Bengals (-6.5) · Yes · +$355,531", "Jets vs. Canadiens · Yes · +$268,392"] },
+  { name: "haveanedge.xyz", held: 300, wr: 100, early: 0, wl: "300-0", markets: ["Recent markets loading…"] },
+  { name: "BLASTSLAM9WINNER", held: 299, wr: 100, early: 1, wl: "299-0", markets: ["Recent markets loading…"] },
+  { name: "biying88888", held: 295, wr: 100, early: 5, wl: "295-0", markets: ["Warriors vs. Grizzlies · Yes · +$59,330"] },
+  { name: "cm2897", held: 287, wr: 100, early: 0, wl: "287-0", markets: ["Recent markets loading…"] },
+  { name: "ChonkVision", held: 286, wr: 100, early: 8, wl: "286-0", markets: ["Recent markets loading…"] },
+  { name: "toottoot", held: 272, wr: 100, early: 28, wl: "272-0", markets: ["Recent markets loading…"] }
 ];
 
 const tbody = document.querySelector("#traders tbody");
 traders.forEach((t, i) => {
   const tr = document.createElement("tr");
   tr.className = "clickable";
-  tr.innerHTML = `<td>${i+1}</td><td>${t.name}</td><td>${t.held}</td><td class="wr">${t.wr}%</td>`;
+  tr.innerHTML = `<td>${i+1}</td><td>${t.name}</td><td>${t.held}</td><td class="wr">${t.wr}%</td><td>${t.early}</td>`;
   tr.onclick = () => toggleDetail(tr, t);
   tbody.appendChild(tr);
 });
@@ -96,16 +100,16 @@ function toggleDetail(tr, t) {
     const detail = document.createElement("tr");
     detail.className = "detail open";
     const marketHtml = t.markets.map(m => `<div class="market-item">${m}</div>`).join("");
-    detail.innerHTML = `<td colspan="4"><strong>${t.name}</strong> · ${t.wl}<br><br>${marketHtml}</td>`;
+    detail.innerHTML = `<td colspan="5"><strong>${t.name}</strong> · ${t.wl} held (60d)<br><br>${marketHtml}</td>`;
     tr.after(detail);
   }
 }
 
 const markets = [
+  { title: "Mavericks vs. Nuggets", side: "Nuggets", count: 4, time: "Nov 24, 2026",
+    traders: ["Tomahawkmaster", "toottoot", "darkumbreon88"] },
   { title: "Pistons vs. Magic", side: "Magic", count: 4, time: "Nov 24, 2026",
     traders: ["strawberrycreek", "Tomahawkmaster"] },
-  { title: "Mavericks vs. Nuggets", side: "Nuggets", count: 4, time: "Nov 24, 2026",
-    traders: ["Tomahawkmaster", "Multicoloured-Serf", "toottoot", "darkumbreon88"] },
   { title: "Celtics vs. Wizards", side: "Celtics", count: 4, time: "Nov 24, 2026",
     traders: ["strawberrycreek"] }
 ];
@@ -131,7 +135,7 @@ markets.forEach(m => {
 
 window.showTrader = function(name) {
   const t = traders.find(x => x.name === name);
-  if (!t) return alert(name + " — record loading");
+  if (!t) return alert(name + " — loading");
   alert(name + "\n" + t.wl + " held (60d)\n" + t.wr + "%");
 };
 </script>

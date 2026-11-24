@@ -1,1 +1,33 @@
-PLACEHOLDER_FOR_FULL_CONTENT
+[
+  {
+    "name": "Rocko33",
+    "held": 500,
+    "early": 0,
+    "wr": 100,
+    "markets": [
+      "Nov 07 · Atalanta BC U23 vs. Reggiana 1919:  · Over · +$1,979",
+      "Nov 21 · Exact Score: Wolverhampton Wanderer · Yes · +$1,609",
+      "Oct 24 · Western Sydney Wanderers FC vs. Auc · Over · +$1,453"
+    ]
+  },
+  {
+    "name": "blue.birds",
+    "held": 500,
+    "early": 0,
+    "wr": 100,
+    "markets": [
+      "Nov 16 · Bitcoin Up or Down - November 15, 1 · Down · +$1,471",
+      "Nov 09 · Bitcoin Up or Down - November 9, 10 · Down · +$1,306"
+    ]
+  },
+  {
+    "name": "strawberrycreek",
+    "held": 500,
+    "early": 0,
+    "wr": 100,
+    "markets": [
+      "Nov 17 · Magic vs. Celtics · Magic · +$6,238",
+      "Nov 24 · Bucks vs. Raptors · Bucks · +$5,673"
+    ]
+  }
+]

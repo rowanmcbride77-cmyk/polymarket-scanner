@@ -12,32 +12,30 @@
   header { padding: 16px 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
   .logo { font-weight: 700; font-size: 1.1rem; }
   .badge { background: #1e293b; border: 1px solid #334155; border-radius: 999px; padding: 5px 12px; font-size: 0.8rem; color: var(--muted); }
-  .hero { padding: 32px 0 16px; }
-  h1 { font-size: 1.9rem; margin: 0 0 10px; font-weight: 700; line-height: 1.2; }
+  .hero { padding: 28px 0 12px; }
+  h1 { font-size: 1.8rem; margin: 0 0 8px; font-weight: 700; line-height: 1.2; }
   h1 span { color: var(--accent); }
-  .desc { color: var(--muted); font-size: 0.95rem; }
-  .explain { background: #0f172a; border-radius: 10px; padding: 12px 14px; margin: 14px 0; font-size: 0.85rem; color: var(--muted); }
-  table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 10px; overflow: hidden; margin-top: 8px; }
-  th, td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--border); }
-  th { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; }
+  .desc { color: var(--muted); font-size: 0.92rem; }
+  table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 10px; overflow: hidden; margin-top: 12px; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; }
   tr.clickable { cursor: pointer; }
   tr.clickable:hover td { background: #1a2332; }
   .wr { color: var(--green); font-weight: 600; }
   .detail { display: none; background: #0f172a; }
   .detail.open { display: table-row; }
-  .detail td { padding: 12px 14px; font-size: 0.84rem; color: var(--muted); }
-  .market-item { padding: 3px 0; }
-  h2 { font-size: 1.1rem; margin: 32px 0 10px; }
-  .market { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; cursor: pointer; }
+  .detail td { padding: 10px 12px; font-size: 0.82rem; color: var(--muted); }
+  .market-item { padding: 2px 0; }
+  h2 { font-size: 1.05rem; margin: 28px 0 8px; }
+  .market { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 8px; cursor: pointer; }
   .market:hover { background: #1a2332; }
   .market-header { display: flex; justify-content: space-between; align-items: center; }
   .market strong { color: var(--green); }
-  .market-meta { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+  .market-meta { font-size: 0.76rem; color: var(--muted); margin-top: 3px; }
   .traders-list { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); display: none; }
   .market.open .traders-list { display: block; }
-  .trader-link { font-size: 0.84rem; padding: 4px 0; color: var(--accent); cursor: pointer; display: flex; justify-content: space-between; }
-  .trader-link:hover { text-decoration: underline; }
-  .note { margin-top: 24px; color: var(--muted); font-size: 0.78rem; }
+  .trader-link { font-size: 0.82rem; padding: 3px 0; color: var(--accent); cursor: pointer; display: flex; justify-content: space-between; }
+  .note { margin-top: 20px; color: var(--muted); font-size: 0.76rem; }
 </style>
 </head>
 <body>
@@ -49,46 +47,43 @@
 
   <div class="hero">
     <h1>Traders who hold<br>to <span>resolution</span>.</h1>
-    <p class="desc">Ranked by true held-to-resolution win rate. Early exits excluded. Click a trader for more markets. Click a shared market for sides and start time.</p>
-  </div>
-
-  <div class="explain">
-    <strong style="color:var(--text);">Pagination</strong> means the API returns results in pages (chunks). To get a full history we request the next page until there are no more. Counts at 200/500 were previous page limits. Full histories are still expanding.
+    <p class="desc">Only same-side consensus markets are shown. Opposite sides are excluded. Click a trader or market.</p>
   </div>
 
   <table id="traders">
     <thead>
-      <tr><th>#</th><th>Trader</th><th>Held (60d)</th><th>Held WR</th><th>Early</th></tr>
+      <tr><th>#</th><th>Trader</th><th>Held (60d)</th><th>Held WR</th></tr>
     </thead>
     <tbody></tbody>
   </table>
 
-  <h2>Shared Open Markets</h2>
+  <h2>Same-Side Shared Markets</h2>
   <div id="shared-markets"></div>
 
   <div class="note">
-    Click a trader name inside a shared market to see their record. Side (outcome) and event time are shown. Full top 100 with complete histories is still being built.
+    Only markets where multiple qualified traders are on the same side appear here. Scan is still expanding past the current list.
   </div>
 </div>
 
 <script>
 const traders = [
-  { name: "Rocko33", held: 1000, wr: 100, early: 0, rank: 1, wl: "1000-0",
-    markets: ["Atalanta BC U23 vs. Reggiana · Over · +$1,979", "Exact Score: Wolves 2-1 · Yes · +$1,609", "Western Sydney vs. Auckland · Over · +$1,453", "Will FA Siauliai win · Yes · +$1,362", "Mali vs. Rwanda: O/U 3.5 · Over · +$1,240", "Exact Score: Wolfsberger 0-2 · Yes · +$1,124"] },
-  { name: "blue.birds", held: 1000, wr: 100, early: 0, rank: 2, wl: "1000-0",
-    markets: ["Bitcoin Up or Down · Down · +$1,471", "Bitcoin Up or Down · Down · +$1,306", "Bitcoin Up or Down · Up · +$1,262", "Bitcoin Up or Down · Down · +$1,203", "Bitcoin Up or Down · Down · +$1,191", "Bitcoin Up or Down · Down · +$1,180"] },
-  { name: "arcsine-barrister", held: 1000, wr: 100, early: 0, rank: 3, wl: "1000-0",
-    markets: ["Bitcoin Up or Down · Up · +$5,000", "Bitcoin Up or Down · Up · +$5,000", "Bitcoin Up or Down · Down · +$5,000", "Bitcoin Up or Down · Up · +$5,000"] },
-  { name: "sharpe-shooter", held: 1000, wr: 100, early: 0, rank: 4, wl: "1000-0", markets: ["Recent markets loading…"] },
-  { name: "strawberrycreek", held: 1000, wr: 100, early: 0, rank: 5, wl: "1000-0", markets: ["Recent markets loading…"] },
-  { name: "tradetharrys", held: 500, wr: 100, early: 0, rank: 6, wl: "500-0", markets: ["Recent markets loading…"] }
+  { name: "Rocko33", held: 200, wr: 100, wl: "200-0", markets: ["Atalanta U23 vs Reggiana · Over · +$1,979", "Wolves exact score · Yes · +$1,609"] },
+  { name: "blue.birds", held: 200, wr: 100, wl: "200-0", markets: ["Bitcoin Up/Down · Down · +$1,471", "Bitcoin Up/Down · Down · +$1,306"] },
+  { name: "arcsine-barrister", held: 200, wr: 100, wl: "200-0", markets: ["Bitcoin Up/Down · Up · +$5,000"] },
+  { name: "sharpe-shooter", held: 200, wr: 100, wl: "200-0", markets: ["Recent markets loading…"] },
+  { name: "strawberrycreek", held: 200, wr: 100, wl: "200-0", markets: ["Recent markets loading…"] },
+  { name: "Tomahawkmaster", held: 150, wr: 100, wl: "150-0", markets: ["Recent markets loading…"] },
+  { name: "toottoot", held: 140, wr: 100, wl: "140-0", markets: ["Recent markets loading…"] },
+  { name: "darkumbreon88", held: 130, wr: 100, wl: "130-0", markets: ["Recent markets loading…"] },
+  { name: "Multicoloured-Serf", held: 120, wr: 100, wl: "120-0", markets: ["Recent markets loading…"] },
+  { name: "Atomforge", held: 110, wr: 100, wl: "110-0", markets: ["Recent markets loading…"] }
 ];
 
 const tbody = document.querySelector("#traders tbody");
 traders.forEach((t, i) => {
   const tr = document.createElement("tr");
   tr.className = "clickable";
-  tr.innerHTML = `<td>${i+1}</td><td>${t.name}</td><td>${t.held}</td><td class="wr">${t.wr}%</td><td>${t.early}</td>`;
+  tr.innerHTML = `<td>${i+1}</td><td>${t.name}</td><td>${t.held}</td><td class="wr">${t.wr}%</td>`;
   tr.onclick = () => toggleDetail(tr, t);
   tbody.appendChild(tr);
 });
@@ -101,43 +96,33 @@ function toggleDetail(tr, t) {
     const detail = document.createElement("tr");
     detail.className = "detail open";
     const marketHtml = t.markets.map(m => `<div class="market-item">${m}</div>`).join("");
-    detail.innerHTML = `<td colspan="5"><strong>${t.name}</strong> · ${t.wl} held (60d)<br><br>${marketHtml}</td>`;
+    detail.innerHTML = `<td colspan="4"><strong>${t.name}</strong> · ${t.wl}<br><br>${marketHtml}</td>`;
     tr.after(detail);
   }
 }
 
 const markets = [
-  { title: "Spread: Pistons (-1.5)", count: 5, time: "Nov 24, 2026",
-    traders: [
-      { name: "strawberrycreek", side: "Magic" },
-      { name: "Rocko33", side: "Pistons" },
-      { name: "blue.birds", side: "Magic" }
-    ] },
-  { title: "Mavericks vs. Nuggets", count: 4, time: "Nov 24, 2026",
-    traders: [
-      { name: "strawberrycreek", side: "Mavericks" },
-      { name: "arcsine-barrister", side: "Nuggets" }
-    ] },
-  { title: "Spread: Celtics (-12.5)", count: 4, time: "Nov 24, 2026",
-    traders: [
-      { name: "strawberrycreek", side: "Celtics" },
-      { name: "sharpe-shooter", side: "Wizards" }
-    ] }
+  { title: "Pistons vs. Magic", side: "Magic", count: 4, time: "Nov 24, 2026",
+    traders: ["strawberrycreek", "Tomahawkmaster"] },
+  { title: "Mavericks vs. Nuggets", side: "Nuggets", count: 4, time: "Nov 24, 2026",
+    traders: ["Tomahawkmaster", "Multicoloured-Serf", "toottoot", "darkumbreon88"] },
+  { title: "Celtics vs. Wizards", side: "Celtics", count: 4, time: "Nov 24, 2026",
+    traders: ["strawberrycreek"] }
 ];
 
 const marketsDiv = document.getElementById("shared-markets");
 markets.forEach(m => {
   const div = document.createElement("div");
   div.className = "market";
-  const traderHtml = m.traders.map(tr => {
-    return `<div class="trader-link" onclick="event.stopPropagation(); showTrader('${tr.name}')"><span>${tr.name}</span><span>${tr.side}</span></div>`;
-  }).join("");
+  const traderHtml = m.traders.map(name => 
+    `<div class="trader-link" onclick="event.stopPropagation(); showTrader('${name}')"><span>${name}</span><span>${m.side}</span></div>`
+  ).join("");
   div.innerHTML = `
     <div class="market-header">
       <span>${m.title}</span>
-      <strong>${m.count}</strong>
+      <strong>${m.count} on ${m.side}</strong>
     </div>
-    <div class="market-meta">Event: ${m.time}</div>
+    <div class="market-meta">Event: ${m.time} · All on ${m.side}</div>
     <div class="traders-list">${traderHtml}</div>
   `;
   div.onclick = () => div.classList.toggle("open");
@@ -146,8 +131,8 @@ markets.forEach(m => {
 
 window.showTrader = function(name) {
   const t = traders.find(x => x.name === name);
-  if (!t) return alert(name + " — full record loading");
-  alert(name + "\n" + t.wl + " held (60d)\n" + t.wr + "% held WR\n\n" + (t.markets || []).slice(0,4).join("\n"));
+  if (!t) return alert(name + " — record loading");
+  alert(name + "\n" + t.wl + " held (60d)\n" + t.wr + "%");
 };
 </script>
 </body>

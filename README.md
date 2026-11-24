@@ -1,12 +1,14 @@
-# Polymarket Held-to-Resolution Scanner
+# HoldRate
 
-Ranks traders by **true held-to-resolution win rate** (early exits completely excluded).
+**HoldRate** ranks Polymarket traders by true **held-to-resolution win rate**.
 
-## Current filters
-- ≥ 90% win rate on positions held until market resolution
+Early exits are completely excluded so the numbers reflect people who actually hold positions through resolution — the ones you can copy with more confidence.
+
+## Filters
+- ≥ 90% win rate on held-to-resolution positions
 - ≥ 10 such closed markets in the last 60 days
 - Ranked by highest held win rate
-- Shows shared current open markets among the top traders
+- Surfaces shared current open markets among the top traders
 
-## Status
-Data pipeline is working. Website scaffold is live. Next: wire real ranked data + expand shared markets view.
+## Live site
+Enable GitHub Pages on the `main` branch (Settings → Pages) to deploy this site.

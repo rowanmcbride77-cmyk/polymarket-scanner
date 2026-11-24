@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Polymarket Held-to-Resolution Scanner</title>
+<title>HoldRate — Polymarket Held-to-Resolution Scanner</title>
 <style>
   :root { --bg: #0a0a0a; --card: #141414; --border: #2a2a2a; --text: #e5e5e5; --muted: #888; --accent: #22c55e; }
   * { box-sizing: border-box; }
   body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); }
   header { padding: 24px 32px; border-bottom: 1px solid var(--border); }
-  h1 { margin: 0 0 8px; font-size: 1.6rem; }
+  h1 { margin: 0 0 8px; font-size: 1.8rem; letter-spacing: -0.02em; }
   .subtitle { color: var(--muted); font-size: 0.95rem; }
   .filters { padding: 16px 32px; background: #111; border-bottom: 1px solid var(--border); font-size: 0.9rem; color: var(--muted); }
   main { padding: 24px 32px; }
@@ -27,11 +27,11 @@
 </head>
 <body>
 <header>
-  <h1>Polymarket Held-to-Resolution Scanner</h1>
-  <div class="subtitle">Top traders ranked by win rate on positions held to resolution only · Last 60 days · Early exits excluded</div>
+  <h1>HoldRate</h1>
+  <div class="subtitle">Polymarket traders ranked by true held-to-resolution win rate · Early exits excluded · Last 60 days</div>
 </header>
 <div class="filters">
-  Filters applied: ≥ 90% held-to-resolution win rate · ≥ 10 closed markets in last 60 days · Ranked by highest win rate
+  Filters: ≥ 90% held-to-resolution win rate · ≥ 10 closed markets in last 60 days · Ranked by highest win rate
 </div>
 <main>
   <table id="traders">
@@ -49,12 +49,11 @@
   </table>
 
   <div class="shared">
-    <h2>Shared Open Markets (sample)</h2>
+    <h2>Shared Open Markets</h2>
     <div id="shared-markets"></div>
   </div>
 </main>
 <script>
-// Placeholder — will be replaced with live data
 const sampleTraders = [
   { name: "Multicoloured-Serf", held: 300, wr: 100, early: 0, wallet: "0x958bdb8a..." },
   { name: "keeptheblueflagflyinghigh", held: 227, wr: 100, early: 73, wallet: "0x0d6a1ada..." },

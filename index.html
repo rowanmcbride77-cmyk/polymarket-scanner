@@ -3,103 +3,86 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HoldRate — Polymarket Held-to-Resolution Scanner</title>
+<title>HoldRate — Polymarket Scanner</title>
 <style>
-  :root { --bg: #0b1120; --card: #111827; --border: #1f2937; --text: #f9fafb; --muted: #9ca3af; --accent: #60a5fa; --green: #22c55e; --yellow: #eab308; }
+  :root { --bg: #0a0e17; --card: #111827; --border: #1f2937; --text: #f1f5f9; --muted: #94a3b8; --accent: #38bdf8; --green: #22c55e; }
   * { box-sizing: border-box; }
   body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); }
-  .container { max-width: 920px; margin: 0 auto; padding: 0 20px 80px; }
-  header { padding: 18px 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; }
-  .logo-icon { width: 32px; height: 32px; background: #3b82f6; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; }
-  .badge { background: #1e293b; border: 1px solid #334155; border-radius: 999px; padding: 6px 14px; font-size: 0.85rem; color: var(--muted); }
-  .hero { padding: 36px 0 20px; }
-  .label { color: var(--green); font-size: 0.75rem; letter-spacing: 1.6px; font-weight: 600; margin-bottom: 10px; }
-  h1 { font-size: 2.3rem; margin: 0 0 12px; font-weight: 700; line-height: 1.15; }
+  .container { max-width: 880px; margin: 0 auto; padding: 0 16px 60px; }
+  header { padding: 16px 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-weight: 700; font-size: 1.1rem; }
+  .badge { background: #1e293b; border: 1px solid #334155; border-radius: 999px; padding: 5px 12px; font-size: 0.8rem; color: var(--muted); }
+  .hero { padding: 32px 0 16px; }
+  h1 { font-size: 1.9rem; margin: 0 0 10px; font-weight: 700; line-height: 1.2; }
   h1 span { color: var(--accent); }
-  .desc { color: var(--muted); font-size: 1rem; max-width: 600px; }
-  .explain { background: #0f172a; border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin: 16px 0; font-size: 0.9rem; color: var(--muted); }
-  .status-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin: 20px 0; }
-  table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 12px; overflow: hidden; }
-  th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
-  th { font-size: 0.75rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .desc { color: var(--muted); font-size: 0.95rem; }
+  .explain { background: #0f172a; border-radius: 10px; padding: 12px 14px; margin: 14px 0; font-size: 0.85rem; color: var(--muted); }
+  table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 10px; overflow: hidden; margin-top: 8px; }
+  th, td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; }
   tr.clickable { cursor: pointer; }
   tr.clickable:hover td { background: #1a2332; }
   .wr { color: var(--green); font-weight: 600; }
   .detail { display: none; background: #0f172a; }
   .detail.open { display: table-row; }
-  .detail td { padding: 14px 18px; font-size: 0.86rem; color: var(--muted); }
-  .market-item { padding: 4px 0; border-bottom: 1px solid #1e293b; }
-  h2 { font-size: 1.15rem; margin: 36px 0 12px; }
-  .market { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 8px; cursor: pointer; }
+  .detail td { padding: 12px 14px; font-size: 0.84rem; color: var(--muted); }
+  .market-item { padding: 3px 0; }
+  h2 { font-size: 1.1rem; margin: 32px 0 10px; }
+  .market { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; cursor: pointer; }
   .market:hover { background: #1a2332; }
   .market-header { display: flex; justify-content: space-between; align-items: center; }
   .market strong { color: var(--green); }
-  .market-meta { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
-  .traders-list { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); display: none; }
+  .traders-list { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); display: none; }
   .market.open .traders-list { display: block; }
-  .trader-row { font-size: 0.85rem; padding: 4px 0; display: flex; justify-content: space-between; }
-  .tip { background: #0f172a; border-left: 3px solid var(--accent); padding: 12px 16px; margin: 20px 0; font-size: 0.9rem; color: var(--muted); }
-  .note { margin-top: 28px; color: var(--muted); font-size: 0.82rem; }
+  .trader-link { font-size: 0.84rem; padding: 4px 0; color: var(--accent); cursor: pointer; }
+  .trader-link:hover { text-decoration: underline; }
+  .note { margin-top: 24px; color: var(--muted); font-size: 0.78rem; }
 </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <div class="logo"><div class="logo-icon">P</div> HOLD RATE</div>
-    <div style="display:flex; gap:12px; align-items:center;">
-      <div style="font-weight:700; font-size:0.9rem; text-align:right;">TOP<br>100</div>
-      <div class="badge">90% HELD WR · 60 DAYS</div>
-    </div>
+    <div class="logo">HoldRate</div>
+    <div class="badge">≥90% held WR · 60 days · ≥10 markets</div>
   </header>
 
   <div class="hero">
-    <div class="label">POLYMARKET TRADER RANKINGS</div>
-    <h1>Find traders<br>who meet the <span>90%</span><br>rule.</h1>
-    <p class="desc">HoldRate ranks traders by held-to-resolution win rate. "Held (60d)" = number of closed markets they held until resolution in the last 60 days (not current open positions). Early exits are excluded.</p>
+    <h1>Traders who hold<br>to <span>resolution</span>.</h1>
+    <p class="desc">Ranked by true held-to-resolution win rate. Early exits excluded. Click a trader or a market.</p>
   </div>
 
   <div class="explain">
-    <strong style="color:var(--text);">How to use this</strong><br>
-    Click a trader for recent held markets. Click a consensus market to see the actual traders currently in it (count matches the expand). Numbers labeled 500+ are minimums from the current API limit — full pagination is still expanding.
-  </div>
-
-  <div class="status-card">
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
-      <div style="width:9px; height:9px; background:var(--yellow); border-radius:50%;"></div>
-      <div style="font-weight:600;">435 unique qualified · top 100 shown</div>
-    </div>
-    <div style="color:var(--muted); font-size:0.9rem;">Shared markets below use real open-position overlap. Counts match the expanded lists.</div>
+    <strong style="color:var(--text);">Held (60d)</strong> = closed markets held until resolution in the last 60 days. Numbers at 200 are current page limits (not final counts). Click a shared market, then click a trader name to see their record.
   </div>
 
   <table id="traders">
     <thead>
-      <tr><th>#</th><th>Trader</th><th>Held (60d)</th><th>Held WR</th><th>Early Filtered</th></tr>
+      <tr><th>#</th><th>Trader</th><th>Held (60d)</th><th>Held WR</th><th>Early</th></tr>
     </thead>
     <tbody></tbody>
   </table>
 
-  <h2>Shared Open Markets (real overlap)</h2>
-  <div class="tip">These counts match the traders shown when you expand. Includes NBA and other sports.</div>
+  <h2>Shared Markets</h2>
   <div id="shared-markets"></div>
 
   <div class="note">
-    Held (60d) = closed markets held to resolution in the last 60 days. 500 figures are current API page limits (minimums). Full histories via cursor pagination are still being added. Early exits are excluded from all win rates.
+    Data is still being expanded with full pagination. Early-exit filter is applied. Counts labeled 200 are page-limit minimums.
   </div>
 </div>
 
 <script>
 const traders = [
-  { name: "Rocko33", held: 500, wr: 100, early: 0, rank: 1, wl: "500-0", markets: ["Sample recent markets loading…"] },
-  { name: "blue.birds", held: 500, wr: 100, early: 0, rank: 2, wl: "500-0", markets: ["Sample recent markets loading…"] },
-  { name: "arcsine-barrister", held: 500, wr: 100, early: 0, rank: 3, wl: "500-0", markets: ["Sample recent markets loading…"] },
-  { name: "sharpe-shooter", held: 500, wr: 100, early: 0, rank: 4, wl: "500-0", markets: ["Sample recent markets loading…"] },
-  { name: "strawberrycreek", held: 500, wr: 100, early: 0, rank: 5, wl: "500-0", markets: ["Sample recent markets loading…"] },
-  { name: "tradetharrys", held: 500, wr: 100, early: 0, rank: 6, wl: "500-0", markets: ["Sample recent markets loading…"] },
-  { name: "Ijustmightmakeit", held: 500, wr: 100, early: 0, rank: 7, wl: "500-0", markets: ["Sample recent markets loading…"] },
-  { name: "rubby-clouds", held: 493, wr: 100, early: 0, rank: 8, wl: "493-0", markets: ["Sample recent markets loading…"] },
-  { name: "22QAQ", held: 469, wr: 100, early: 0, rank: 9, wl: "469-0", markets: ["Sample recent markets loading…"] },
-  { name: "Atomforge", held: 438, wr: 100, early: 0, rank: 10, wl: "438-0", markets: ["Sample recent markets loading…"] }
+  { name: "Rocko33", held: 200, wr: 100, early: 0, rank: 1, wl: "200-0",
+    markets: ["Atalanta BC U23 vs. Reggiana · Over · +$1,979", "Exact Score: Wolves 2-1 · Yes · +$1,609", "Western Sydney vs. Auckland · Over · +$1,453", "Will FA Siauliai win · Yes · +$1,362"] },
+  { name: "blue.birds", held: 200, wr: 100, early: 0, rank: 2, wl: "200-0",
+    markets: ["Bitcoin Up or Down · Down · +$1,471", "Bitcoin Up or Down · Down · +$1,306", "Bitcoin Up or Down · Up · +$1,262", "Bitcoin Up or Down · Down · +$1,203"] },
+  { name: "arcsine-barrister", held: 200, wr: 100, early: 0, rank: 3, wl: "200-0",
+    markets: ["Bitcoin Up or Down · Up · +$5,000", "Bitcoin Up or Down · Up · +$5,000", "Bitcoin Up or Down · Down · +$5,000", "Bitcoin Up or Down · Up · +$5,000"] },
+  { name: "sharpe-shooter", held: 200, wr: 100, early: 0, rank: 4, wl: "200-0", markets: ["Recent markets loading…"] },
+  { name: "strawberrycreek", held: 200, wr: 100, early: 0, rank: 5, wl: "200-0", markets: ["Recent markets loading…"] },
+  { name: "tradetharrys", held: 200, wr: 100, early: 0, rank: 6, wl: "200-0", markets: ["Recent markets loading…"] },
+  { name: "Ijustmightmakeit", held: 200, wr: 100, early: 0, rank: 7, wl: "200-0", markets: ["Recent markets loading…"] },
+  { name: "rubby-clouds", held: 199, wr: 100, early: 1, rank: 8, wl: "199-1", markets: ["Recent markets loading…"] }
 ];
 
 const tbody = document.querySelector("#traders tbody");
@@ -107,74 +90,56 @@ traders.forEach((t, i) => {
   const tr = document.createElement("tr");
   tr.className = "clickable";
   tr.innerHTML = `<td>${i+1}</td><td>${t.name}</td><td>${t.held}</td><td class="wr">${t.wr}%</td><td>${t.early}</td>`;
-  tr.onclick = () => {
-    const next = tr.nextElementSibling;
-    if (next && next.classList.contains("detail")) {
-      next.classList.toggle("open");
-    } else {
-      const detail = document.createElement("tr");
-      detail.className = "detail open";
-      const marketHtml = t.markets.map(m => `<div class="market-item">${m}</div>`).join("");
-      detail.innerHTML = `<td colspan="5"><strong>${t.name}</strong> · Rank #${t.rank} · ${t.wl} held (60d min)<br><br>${marketHtml}<br><em style="color:#666;">Full recent market list still loading via pagination.</em></td>`;
-      tr.after(detail);
-    }
-  };
+  tr.onclick = () => toggleDetail(tr, t);
   tbody.appendChild(tr);
 });
 
+function toggleDetail(tr, t) {
+  const next = tr.nextElementSibling;
+  if (next && next.classList.contains("detail")) {
+    next.classList.toggle("open");
+  } else {
+    const detail = document.createElement("tr");
+    detail.className = "detail open";
+    const marketHtml = t.markets.map(m => `<div class="market-item">${m}</div>`).join("");
+    detail.innerHTML = `<td colspan="5"><strong>${t.name}</strong> · ${t.wl} held (60d)<br><br>${marketHtml}</td>`;
+    tr.after(detail);
+  }
+}
+
 const markets = [
-  { title: "NBA: Pistons vs. Magic", count: 5, time: "Nov 24, 2026",
-    traders: [
-      { name: "Rocko33", rank: 1, wl: "500-0" },
-      { name: "blue.birds", rank: 2, wl: "500-0" },
-      { name: "arcsine-barrister", rank: 3, wl: "500-0" },
-      { name: "sharpe-shooter", rank: 4, wl: "500-0" },
-      { name: "tradetharrys", rank: 6, wl: "500-0" }
-    ] },
-  { title: "NBA: Celtics vs. Wizards", count: 5, time: "Nov 24, 2026",
-    traders: [
-      { name: "Rocko33", rank: 1, wl: "500-0" },
-      { name: "strawberrycreek", rank: 5, wl: "500-0" },
-      { name: "Ijustmightmakeit", rank: 7, wl: "500-0" },
-      { name: "rubby-clouds", rank: 8, wl: "493-0" },
-      { name: "22QAQ", rank: 9, wl: "469-0" }
-    ] },
-  { title: "NBA: Mavericks vs. Nuggets", count: 4, time: "Nov 24, 2026",
-    traders: [
-      { name: "blue.birds", rank: 2, wl: "500-0" },
-      { name: "arcsine-barrister", rank: 3, wl: "500-0" },
-      { name: "Atomforge", rank: 10, wl: "438-0" },
-      { name: "sharpe-shooter", rank: 4, wl: "500-0" }
-    ] },
-  { title: "UCL: Feyenoord vs. Porto", count: 6, time: "Nov 24, 2026",
-    traders: [
-      { name: "Rocko33", rank: 1, wl: "500-0" },
-      { name: "blue.birds", rank: 2, wl: "500-0" },
-      { name: "tradetharrys", rank: 6, wl: "500-0" },
-      { name: "Ijustmightmakeit", rank: 7, wl: "500-0" },
-      { name: "rubby-clouds", rank: 8, wl: "493-0" },
-      { name: "22QAQ", rank: 9, wl: "469-0" }
-    ] }
+  { title: "NBA: Pistons vs. Magic", count: 5,
+    traders: ["Rocko33", "blue.birds", "arcsine-barrister", "sharpe-shooter", "tradetharrys"] },
+  { title: "NBA: Celtics vs. Wizards", count: 5,
+    traders: ["Rocko33", "strawberrycreek", "Ijustmightmakeit", "rubby-clouds"] },
+  { title: "NBA: Mavericks vs. Nuggets", count: 4,
+    traders: ["blue.birds", "arcsine-barrister", "sharpe-shooter"] }
 ];
 
 const marketsDiv = document.getElementById("shared-markets");
 markets.forEach(m => {
   const div = document.createElement("div");
   div.className = "market";
-  const traderHtml = m.traders.map(t => 
-    `<div class="trader-row"><span>${t.name} (#${t.rank})</span><span class="wr">${t.wl}</span></div>`
-  ).join("");
+  const traderHtml = m.traders.map(name => {
+    const t = traders.find(x => x.name === name) || { name, wl: "?", wr: "?" };
+    return `<div class="trader-link" onclick="event.stopPropagation(); showTrader('${name}')">${name} · ${t.wl || t.wr + '%'}</div>`;
+  }).join("");
   div.innerHTML = `
     <div class="market-header">
       <span>${m.title}</span>
-      <strong>${m.count} traders</strong>
+      <strong>${m.count}</strong>
     </div>
-    <div class="market-meta">Event: ${m.time}</div>
     <div class="traders-list">${traderHtml}</div>
   `;
   div.onclick = () => div.classList.toggle("open");
   marketsDiv.appendChild(div);
 });
+
+window.showTrader = function(name) {
+  const t = traders.find(x => x.name === name);
+  if (!t) return alert(name + " — full record loading");
+  alert(name + "\n" + t.wl + " held (60d)\n" + t.wr + "% held WR\n\n" + (t.markets || []).slice(0,3).join("\n"));
+};
 </script>
 </body>
 </html>

@@ -5,16 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HoldRate — Polymarket Held-to-Resolution Scanner</title>
 <style>
-  :root {
-    --bg: #0b1120;
-    --card: #111827;
-    --border: #1f2937;
-    --text: #f9fafb;
-    --muted: #9ca3af;
-    --accent: #60a5fa;
-    --green: #22c55e;
-    --yellow: #eab308;
-  }
+  :root { --bg: #0b1120; --card: #111827; --border: #1f2937; --text: #f9fafb; --muted: #9ca3af; --accent: #60a5fa; --green: #22c55e; --yellow: #eab308; }
   * { box-sizing: border-box; }
   body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); }
   .container { max-width: 920px; margin: 0 auto; padding: 0 20px 80px; }
@@ -70,7 +61,7 @@
 
   <div class="explain">
     <strong style="color:var(--text);">How to use this</strong><br>
-    Click a trader for recent held markets. Click a consensus market to see which ranked traders are in it (with their held win rate). Higher overlap among 90%+ traders is the strongest copy signal.
+    Click a trader for recent held markets. Click a consensus market to see which ranked traders are in it (with their W-L record). Higher overlap among 90%+ traders is the strongest copy signal.
   </div>
 
   <div class="status-card">
@@ -78,7 +69,7 @@
       <div style="width:9px; height:9px; background:var(--yellow); border-radius:50%;"></div>
       <div style="font-weight:600;">342 qualified so far · scanning toward 1000+</div>
     </div>
-    <div style="color:var(--muted); font-size:0.9rem;">~1,964 leaderboard candidates collected. Rate limits make full scans take time; more results are being added.</div>
+    <div style="color:var(--muted); font-size:0.9rem;">Data is still partially sample-based. Full paginated scan (no 300 cap) is in progress.</div>
   </div>
 
   <table id="traders">
@@ -89,32 +80,26 @@
   </table>
 
   <h2>Strongest Consensus (best copy candidates)</h2>
-  <div class="tip">Click a market to expand the traders in it. Each shows their rank and held-to-resolution win rate.</div>
+  <div class="tip">Click a market to expand the traders in it. Each shows rank and held W-L record.</div>
   <div id="shared-markets"></div>
 
   <div class="note">
-    Held WR is true hold-to-resolution only (early exits excluded). Full market histories without the 300 cap are still being loaded via pagination.
+    W-L is held-to-resolution only (early exits excluded). Current numbers still reflect the previous 300-position limit on some wallets. Full histories are being added.
   </div>
 </div>
 
 <script>
 const traders = [
-  { name: "Multicoloured-Serf", held: 300, wr: 100, early: 0, rank: 1,
+  { name: "Multicoloured-Serf", held: 300, wr: 100, early: 0, rank: 1, wl: "300-0",
     markets: ["Will Chelsea FC win on 2026-11-08? · Bought No @ ~0.49 · +$926,524", "Spread: Bengals (-6.5) · Bought Yes · +$355,531", "Jets vs. Canadiens · Bought Yes · +$268,392"] },
-  { name: "biying88888", held: 295, wr: 100, early: 5, rank: 3,
+  { name: "biying88888", held: 295, wr: 100, early: 5, rank: 3, wl: "295-0",
     markets: ["Warriors vs. Grizzlies · Bought Yes · +$59,330", "Warriors vs. Mavericks · Bought Yes · +$39,006", "Spread: Spurs (-11.5) · Bought Yes · +$23,500"] },
-  { name: "cm2897", held: 287, wr: 100, early: 0, rank: 4,
-    markets: ["Full list loading…"] },
-  { name: "ChonkVision", held: 286, wr: 100, early: 8, rank: 5,
-    markets: ["Full list loading…"] },
-  { name: "toottoot", held: 272, wr: 100, early: 28, rank: 6,
-    markets: ["Full list loading…"] },
-  { name: "misterblobby", held: 262, wr: 100, early: 38, rank: 7,
-    markets: ["Full list loading…"] },
-  { name: "keeptheblueflagflyinghigh", held: 227, wr: 100, early: 73, rank: 8,
-    markets: ["Full list loading…"] },
-  { name: "HomeRunHazard", held: 128, wr: 100, early: 18, rank: 15,
-    markets: ["Full list loading…"] }
+  { name: "cm2897", held: 287, wr: 100, early: 0, rank: 4, wl: "287-0", markets: ["Full list loading…"] },
+  { name: "ChonkVision", held: 286, wr: 100, early: 8, rank: 5, wl: "286-0", markets: ["Full list loading…"] },
+  { name: "toottoot", held: 272, wr: 100, early: 28, rank: 6, wl: "272-0", markets: ["Full list loading…"] },
+  { name: "misterblobby", held: 262, wr: 100, early: 38, rank: 7, wl: "262-0", markets: ["Full list loading…"] },
+  { name: "keeptheblueflagflyinghigh", held: 227, wr: 100, early: 73, rank: 8, wl: "227-0", markets: ["Full list loading…"] },
+  { name: "HomeRunHazard", held: 128, wr: 100, early: 18, rank: 15, wl: "128-0", markets: ["Full list loading…"] }
 ];
 
 const tbody = document.querySelector("#traders tbody");
@@ -130,7 +115,7 @@ traders.forEach((t, i) => {
       const detail = document.createElement("tr");
       detail.className = "detail open";
       const marketHtml = t.markets.map(m => `<div class="market-item">${m}</div>`).join("");
-      detail.innerHTML = `<td colspan="5"><strong>${t.name}</strong> · Rank #${t.rank} · ${t.held} held (60d) · <span class="wr">${t.wr}%</span><br><br>${marketHtml}</td>`;
+      detail.innerHTML = `<td colspan="5"><strong>${t.name}</strong> · Rank #${t.rank} · ${t.wl} held · <span class="wr">${t.wr}%</span><br><br>${marketHtml}</td>`;
       tr.after(detail);
     }
   };
@@ -140,29 +125,29 @@ traders.forEach((t, i) => {
 const markets = [
   { title: "Dota 2: OG vs Aurora (BO3) — BLAST Slam", count: 13, time: "Nov 24, 2026",
     traders: [
-      { name: "Multicoloured-Serf", rank: 1, wr: 100 },
-      { name: "biying88888", rank: 3, wr: 100 },
-      { name: "cm2897", rank: 4, wr: 100 }
+      { name: "Multicoloured-Serf", rank: 1, wl: "300-0" },
+      { name: "biying88888", rank: 3, wl: "295-0" },
+      { name: "cm2897", rank: 4, wl: "287-0" }
     ] },
   { title: "Spread: Real Betis Balompié (-1.5)", count: 12, time: "Nov 24, 2026",
     traders: [
-      { name: "cm2897", rank: 4, wr: 100 },
-      { name: "ChonkVision", rank: 5, wr: 100 },
-      { name: "keeptheblueflagflyinghigh", rank: 8, wr: 100 }
+      { name: "cm2897", rank: 4, wl: "287-0" },
+      { name: "ChonkVision", rank: 5, wl: "286-0" },
+      { name: "keeptheblueflagflyinghigh", rank: 8, wl: "227-0" }
     ] },
   { title: "Manchester City FC vs. SSC Napoli: O/U 3.5", count: 11, time: "Nov 24, 2026",
     traders: [
-      { name: "Multicoloured-Serf", rank: 1, wr: 100 },
-      { name: "biying88888", rank: 3, wr: 100 }
+      { name: "Multicoloured-Serf", rank: 1, wl: "300-0" },
+      { name: "biying88888", rank: 3, wl: "295-0" }
     ] },
   { title: "Will Arsenal FC win on 2026-11-24?", count: 9, time: "Nov 24, 2026",
     traders: [
-      { name: "ChonkVision", rank: 5, wr: 100 },
-      { name: "misterblobby", rank: 7, wr: 100 }
+      { name: "ChonkVision", rank: 5, wl: "286-0" },
+      { name: "misterblobby", rank: 7, wl: "262-0" }
     ] },
   { title: "Pistons vs. Magic", count: 9, time: "Nov 24, 2026",
     traders: [
-      { name: "HomeRunHazard", rank: 15, wr: 100 }
+      { name: "HomeRunHazard", rank: 15, wl: "128-0" }
     ] }
 ];
 
@@ -171,7 +156,7 @@ markets.forEach(m => {
   const div = document.createElement("div");
   div.className = "market";
   const traderHtml = m.traders.map(t => 
-    `<div class="trader-row"><span>${t.name} (#${t.rank})</span><span class="wr">${t.wr}% held WR</span></div>`
+    `<div class="trader-row"><span>${t.name} (#${t.rank})</span><span class="wr">${t.wl}</span></div>`
   ).join("");
   div.innerHTML = `
     <div class="market-header">

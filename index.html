@@ -23,6 +23,7 @@
   .shared h2 { font-size: 1.2rem; margin-bottom: 12px; }
   .market-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; }
   .market-card strong { color: var(--accent); }
+  .note { margin-top: 24px; color: var(--muted); font-size: 0.85rem; }
 </style>
 </head>
 <body>
@@ -52,16 +53,24 @@
     <h2>Shared Open Markets</h2>
     <div id="shared-markets"></div>
   </div>
+  <div class="note">Data from top PnL leaderboard wallets. Early exits excluded so win rates reflect positions held to resolution.</div>
 </main>
 <script>
-const sampleTraders = [
-  { name: "Multicoloured-Serf", held: 300, wr: 100, early: 0, wallet: "0x958bdb8a..." },
-  { name: "keeptheblueflagflyinghigh", held: 227, wr: 100, early: 73, wallet: "0x0d6a1ada..." },
-  { name: "HomeRunHazard", held: 113, wr: 100, early: 15, wallet: "0x52685279..." }
+const realTraders = [
+  {"name": "Multicoloured-Serf", "held": 300, "wr": 100.0, "early": 0, "wallet": "0x958bdb8a..."},
+  {"name": "biying88888", "held": 295, "wr": 100.0, "early": 5, "wallet": "0xd089af0b..."},
+  {"name": "cm2897", "held": 287, "wr": 100.0, "early": 0, "wallet": "0x7c1b3a6d..."},
+  {"name": "ChonkVision", "held": 286, "wr": 100.0, "early": 8, "wallet": "0x676c1bb6..."},
+  {"name": "toottoot", "held": 272, "wr": 100.0, "early": 28, "wallet": "0x8ed5028e..."},
+  {"name": "misterblobby", "held": 262, "wr": 100.0, "early": 38, "wallet": "0x97cc0cd3..."},
+  {"name": "Eager47259", "held": 260, "wr": 100.0, "early": 39, "wallet": "0xab155a20..."},
+  {"name": "keeptheblueflagflyinghigh", "held": 227, "wr": 100.0, "early": 73, "wallet": "0x0d6a1ada..."},
+  {"name": "HomeRunHazard", "held": 128, "wr": 100.0, "early": 18, "wallet": "0x52685279..."},
+  {"name": "xtxpleasecallme", "held": 118, "wr": 100.0, "early": 149, "wallet": "0xad5353af..."}
 ];
 
 const tbody = document.querySelector("#traders tbody");
-sampleTraders.forEach((t, i) => {
+realTraders.forEach((t, i) => {
   const tr = document.createElement("tr");
   tr.innerHTML = `
     <td>${i+1}</td>

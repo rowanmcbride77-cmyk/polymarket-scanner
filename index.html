@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polymarket Held-to-Resolution Scanner</title>
+<style>
+  :root { --bg: #0a0a0a; --card: #141414; --border: #2a2a2a; --text: #e5e5e5; --muted: #888; --accent: #22c55e; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); }
+  header { padding: 24px 32px; border-bottom: 1px solid var(--border); }
+  h1 { margin: 0 0 8px; font-size: 1.6rem; }
+  .subtitle { color: var(--muted); font-size: 0.95rem; }
+  .filters { padding: 16px 32px; background: #111; border-bottom: 1px solid var(--border); font-size: 0.9rem; color: var(--muted); }
+  main { padding: 24px 32px; }
+  table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 8px; overflow: hidden; }
+  th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { background: #1a1a1a; font-weight: 600; font-size: 0.85rem; color: var(--muted); }
+  tr:hover td { background: #1c1c1c; }
+  .wr { color: var(--accent); font-weight: 600; }
+  .wallet { font-family: ui-monospace, monospace; font-size: 0.8rem; color: var(--muted); }
+  .shared { margin-top: 40px; }
+  .shared h2 { font-size: 1.2rem; margin-bottom: 12px; }
+  .market-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+  .market-card strong { color: var(--accent); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Polymarket Held-to-Resolution Scanner</h1>
+  <div class="subtitle">Top traders ranked by win rate on positions held to resolution only · Last 60 days · Early exits excluded</div>
+</header>
+<div class="filters">
+  Filters applied: ≥ 90% held-to-resolution win rate · ≥ 10 closed markets in last 60 days · Ranked by highest win rate
+</div>
+<main>
+  <table id="traders">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Trader</th>
+        <th>Held Markets (60d)</th>
+        <th>Held Win Rate</th>
+        <th>Early Exits Filtered</th>
+        <th>Wallet</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div class="shared">
+    <h2>Shared Open Markets (sample)</h2>
+    <div id="shared-markets"></div>
+  </div>
+</main>
+<script>
+// Placeholder — will be replaced with live data
+const sampleTraders = [
+  { name: "Multicoloured-Serf", held: 300, wr: 100, early: 0, wallet: "0x958bdb8a..." },
+  { name: "keeptheblueflagflyinghigh", held: 227, wr: 100, early: 73, wallet: "0x0d6a1ada..." },
+  { name: "HomeRunHazard", held: 113, wr: 100, early: 15, wallet: "0x52685279..." }
+];
+
+const tbody = document.querySelector("#traders tbody");
+sampleTraders.forEach((t, i) => {
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td>${i+1}</td>
+    <td>${t.name}</td>
+    <td>${t.held}</td>
+    <td class="wr">${t.wr}%</td>
+    <td>${t.early}</td>
+    <td class="wallet">${t.wallet}</td>
+  `;
+  tbody.appendChild(tr);
+});
+
+document.getElementById("shared-markets").innerHTML = `
+  <div class="market-card"><strong>5 traders</strong> — Pistons vs. Magic: O/U 212.5</div>
+  <div class="market-card"><strong>5 traders</strong> — Will Aston Villa FC win on 2026-11-24?</div>
+  <div class="market-card"><strong>4 traders</strong> — Celtics vs. Wizards</div>
+`;
+</script>
+</body>
+</html>

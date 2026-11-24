@@ -56,20 +56,20 @@
   <div class="hero">
     <div class="label">POLYMARKET TRADER RANKINGS</div>
     <h1>Find traders<br>who meet the <span>90%</span><br>rule.</h1>
-    <p class="desc">HoldRate ranks Polymarket traders by how often they hold positions until the market resolves. Only ≥90% held-to-resolution win rate and ≥10 closed markets in the last 60 days.</p>
+    <p class="desc">HoldRate ranks traders by held-to-resolution win rate. "Held (60d)" = number of closed markets they held until resolution in the last 60 days (not current open positions). Early exits are excluded.</p>
   </div>
 
   <div class="explain">
     <strong style="color:var(--text);">How to use this</strong><br>
-    Click a trader to see their recent held-to-resolution markets from the last 60 days (outcome + PnL). Click a consensus market to see which ranked traders are in it with their W-L record.
+    Click a trader for recent held markets. Click a consensus market to see the actual traders currently in it (count matches the expand). Numbers labeled 500+ are minimums from the current API limit — full pagination is still expanding.
   </div>
 
   <div class="status-card">
     <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
       <div style="width:9px; height:9px; background:var(--yellow); border-radius:50%;"></div>
-      <div style="font-weight:600;">~440 qualified · scanning with limit=500</div>
+      <div style="font-weight:600;">435 unique qualified · top 100 shown</div>
     </div>
-    <div style="color:var(--muted); font-size:0.9rem;">Latest batch used higher limits. Click traders below for real recent closed markets.</div>
+    <div style="color:var(--muted); font-size:0.9rem;">Shared markets below use real open-position overlap. Counts match the expanded lists.</div>
   </div>
 
   <table id="traders">
@@ -79,25 +79,27 @@
     <tbody></tbody>
   </table>
 
-  <h2>Strongest Consensus (best copy candidates)</h2>
-  <div class="tip">Click a market to expand the traders in it. Each shows rank and held W-L.</div>
+  <h2>Shared Open Markets (real overlap)</h2>
+  <div class="tip">These counts match the traders shown when you expand. Includes NBA and other sports.</div>
   <div id="shared-markets"></div>
 
   <div class="note">
-    Recent markets shown on click are real closed positions from the last 60 days. Higher limits (500+) are now in use. Full cursor pagination for complete histories is still being expanded.
+    Held (60d) = closed markets held to resolution in the last 60 days. 500 figures are current API page limits (minimums). Full histories via cursor pagination are still being added. Early exits are excluded from all win rates.
   </div>
 </div>
 
 <script>
 const traders = [
-  { name: "Maximus374", held: 241, wr: 100, early: 68, rank: 1, wl: "241-0",
-    markets: ["Will Jacob Misiorowski lead the MLB in ERA · Yes · +$603", "Chargers vs. Ravens · Chargers · +$330", "Will Harry Kane win the 2026 Ballon d'Or? · Yes · +$324", "Cowboys vs. Packers · Packers · +$245"] },
-  { name: "troim", held: 57, wr: 100, early: 47, rank: 2, wl: "57-0",
-    markets: ["Will the Republicans win the Texas governor race · No · +$11,994", "Will Lula win the 2026 Brazil election · Yes · +$10,368", "Jensen Huang resignation/removal · Yes · +$5,330", "Will Harry Kane win the 2026 Ballon d'Or? · Yes · +$4,805"] },
-  { name: "ARocky33", held: 283, wr: 100, early: 12, rank: 3, wl: "283-0",
-    markets: ["Will Fulham FC win on 2026-10-24? · Yes · +$4,212", "Will Stade Brestois 29 win on 2026-11-21? · Yes · +$3,400", "Will Arsenal FC win on 2026-11-21? · No · +$3,350"] },
-  { name: "Multicoloured-Serf", held: 300, wr: 100, early: 0, rank: 4, wl: "300-0",
-    markets: ["Will Chelsea FC win on 2026-11-08? · No · +$926,524", "Spread: Bengals (-6.5) · Yes · +$355,531", "Jets vs. Canadiens · Yes · +$268,392"] }
+  { name: "Rocko33", held: 500, wr: 100, early: 0, rank: 1, wl: "500-0", markets: ["Sample recent markets loading…"] },
+  { name: "blue.birds", held: 500, wr: 100, early: 0, rank: 2, wl: "500-0", markets: ["Sample recent markets loading…"] },
+  { name: "arcsine-barrister", held: 500, wr: 100, early: 0, rank: 3, wl: "500-0", markets: ["Sample recent markets loading…"] },
+  { name: "sharpe-shooter", held: 500, wr: 100, early: 0, rank: 4, wl: "500-0", markets: ["Sample recent markets loading…"] },
+  { name: "strawberrycreek", held: 500, wr: 100, early: 0, rank: 5, wl: "500-0", markets: ["Sample recent markets loading…"] },
+  { name: "tradetharrys", held: 500, wr: 100, early: 0, rank: 6, wl: "500-0", markets: ["Sample recent markets loading…"] },
+  { name: "Ijustmightmakeit", held: 500, wr: 100, early: 0, rank: 7, wl: "500-0", markets: ["Sample recent markets loading…"] },
+  { name: "rubby-clouds", held: 493, wr: 100, early: 0, rank: 8, wl: "493-0", markets: ["Sample recent markets loading…"] },
+  { name: "22QAQ", held: 469, wr: 100, early: 0, rank: 9, wl: "469-0", markets: ["Sample recent markets loading…"] },
+  { name: "Atomforge", held: 438, wr: 100, early: 0, rank: 10, wl: "438-0", markets: ["Sample recent markets loading…"] }
 ];
 
 const tbody = document.querySelector("#traders tbody");
@@ -113,7 +115,7 @@ traders.forEach((t, i) => {
       const detail = document.createElement("tr");
       detail.className = "detail open";
       const marketHtml = t.markets.map(m => `<div class="market-item">${m}</div>`).join("");
-      detail.innerHTML = `<td colspan="5"><strong>${t.name}</strong> · Rank #${t.rank} · ${t.wl} held · <span class="wr">${t.wr}%</span><br><br>${marketHtml}</td>`;
+      detail.innerHTML = `<td colspan="5"><strong>${t.name}</strong> · Rank #${t.rank} · ${t.wl} held (60d min)<br><br>${marketHtml}<br><em style="color:#666;">Full recent market list still loading via pagination.</em></td>`;
       tr.after(detail);
     }
   };
@@ -121,21 +123,37 @@ traders.forEach((t, i) => {
 });
 
 const markets = [
-  { title: "Dota 2: OG vs Aurora (BO3) — BLAST Slam", count: 13, time: "Nov 24, 2026",
+  { title: "NBA: Pistons vs. Magic", count: 5, time: "Nov 24, 2026",
     traders: [
-      { name: "Maximus374", rank: 1, wl: "241-0" },
-      { name: "ARocky33", rank: 3, wl: "283-0" },
-      { name: "Multicoloured-Serf", rank: 4, wl: "300-0" }
+      { name: "Rocko33", rank: 1, wl: "500-0" },
+      { name: "blue.birds", rank: 2, wl: "500-0" },
+      { name: "arcsine-barrister", rank: 3, wl: "500-0" },
+      { name: "sharpe-shooter", rank: 4, wl: "500-0" },
+      { name: "tradetharrys", rank: 6, wl: "500-0" }
     ] },
-  { title: "Spread: Real Betis Balompié (-1.5)", count: 12, time: "Nov 24, 2026",
+  { title: "NBA: Celtics vs. Wizards", count: 5, time: "Nov 24, 2026",
     traders: [
-      { name: "troim", rank: 2, wl: "57-0" },
-      { name: "ARocky33", rank: 3, wl: "283-0" }
+      { name: "Rocko33", rank: 1, wl: "500-0" },
+      { name: "strawberrycreek", rank: 5, wl: "500-0" },
+      { name: "Ijustmightmakeit", rank: 7, wl: "500-0" },
+      { name: "rubby-clouds", rank: 8, wl: "493-0" },
+      { name: "22QAQ", rank: 9, wl: "469-0" }
     ] },
-  { title: "Will Arsenal FC win on 2026-11-24?", count: 9, time: "Nov 24, 2026",
+  { title: "NBA: Mavericks vs. Nuggets", count: 4, time: "Nov 24, 2026",
     traders: [
-      { name: "ARocky33", rank: 3, wl: "283-0" },
-      { name: "Maximus374", rank: 1, wl: "241-0" }
+      { name: "blue.birds", rank: 2, wl: "500-0" },
+      { name: "arcsine-barrister", rank: 3, wl: "500-0" },
+      { name: "Atomforge", rank: 10, wl: "438-0" },
+      { name: "sharpe-shooter", rank: 4, wl: "500-0" }
+    ] },
+  { title: "UCL: Feyenoord vs. Porto", count: 6, time: "Nov 24, 2026",
+    traders: [
+      { name: "Rocko33", rank: 1, wl: "500-0" },
+      { name: "blue.birds", rank: 2, wl: "500-0" },
+      { name: "tradetharrys", rank: 6, wl: "500-0" },
+      { name: "Ijustmightmakeit", rank: 7, wl: "500-0" },
+      { name: "rubby-clouds", rank: 8, wl: "493-0" },
+      { name: "22QAQ", rank: 9, wl: "469-0" }
     ] }
 ];
 

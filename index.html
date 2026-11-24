@@ -12,18 +12,18 @@
   h1 { margin: 0 0 8px; font-size: 1.8rem; letter-spacing: -0.02em; }
   .subtitle { color: var(--muted); font-size: 0.95rem; }
   .filters { padding: 16px 32px; background: #111; border-bottom: 1px solid var(--border); font-size: 0.9rem; color: var(--muted); }
-  main { padding: 24px 32px; }
+  main { padding: 24px 32px; max-width: 1100px; }
   table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 8px; overflow: hidden; }
   th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
   th { background: #1a1a1a; font-weight: 600; font-size: 0.85rem; color: var(--muted); }
   tr:hover td { background: #1c1c1c; }
   .wr { color: var(--accent); font-weight: 600; }
   .wallet { font-family: ui-monospace, monospace; font-size: 0.8rem; color: var(--muted); }
-  .shared { margin-top: 40px; }
-  .shared h2 { font-size: 1.2rem; margin-bottom: 12px; }
-  .market-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; }
-  .market-card strong { color: var(--accent); }
-  .note { margin-top: 24px; color: var(--muted); font-size: 0.85rem; }
+  .shared { margin-top: 48px; }
+  .shared h2 { font-size: 1.25rem; margin-bottom: 16px; }
+  .market-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+  .market-card strong { color: var(--accent); font-size: 1.05rem; }
+  .note { margin-top: 32px; color: var(--muted); font-size: 0.85rem; }
 </style>
 </head>
 <body>
@@ -32,7 +32,7 @@
   <div class="subtitle">Polymarket traders ranked by true held-to-resolution win rate · Early exits excluded · Last 60 days</div>
 </header>
 <div class="filters">
-  Filters: ≥ 90% held-to-resolution win rate · ≥ 10 closed markets in last 60 days · Ranked by highest win rate
+  Filters: ≥ 90% held-to-resolution win rate · ≥ 10 closed markets in last 60 days · Ranked by highest win rate · 226+ qualified so far
 </div>
 <main>
   <table id="traders">
@@ -50,23 +50,25 @@
   </table>
 
   <div class="shared">
-    <h2>Shared Open Markets</h2>
+    <h2>Shared Open Markets (top traders)</h2>
     <div id="shared-markets"></div>
   </div>
-  <div class="note">Data from top PnL leaderboard wallets. Early exits excluded so win rates reflect positions held to resolution.</div>
+  <div class="note">Early exits are fully excluded. Win rates reflect only positions held until market resolution. Data refreshed from top PnL leaderboards.</div>
 </main>
 <script>
 const realTraders = [
-  {"name": "Multicoloured-Serf", "held": 300, "wr": 100.0, "early": 0, "wallet": "0x958bdb8a..."},
-  {"name": "biying88888", "held": 295, "wr": 100.0, "early": 5, "wallet": "0xd089af0b..."},
-  {"name": "cm2897", "held": 287, "wr": 100.0, "early": 0, "wallet": "0x7c1b3a6d..."},
-  {"name": "ChonkVision", "held": 286, "wr": 100.0, "early": 8, "wallet": "0x676c1bb6..."},
-  {"name": "toottoot", "held": 272, "wr": 100.0, "early": 28, "wallet": "0x8ed5028e..."},
-  {"name": "misterblobby", "held": 262, "wr": 100.0, "early": 38, "wallet": "0x97cc0cd3..."},
-  {"name": "Eager47259", "held": 260, "wr": 100.0, "early": 39, "wallet": "0xab155a20..."},
-  {"name": "keeptheblueflagflyinghigh", "held": 227, "wr": 100.0, "early": 73, "wallet": "0x0d6a1ada..."},
-  {"name": "HomeRunHazard", "held": 128, "wr": 100.0, "early": 18, "wallet": "0x52685279..."},
-  {"name": "xtxpleasecallme", "held": 118, "wr": 100.0, "early": 149, "wallet": "0xad5353af..."}
+  {"name": "Multicoloured-Serf", "held": 300, "wr": 100, "early": 0, "wallet": "0x958bdb8a..."},
+  {"name": "biying88888", "held": 295, "wr": 100, "early": 5, "wallet": "0xd089af0b..."},
+  {"name": "cm2897", "held": 287, "wr": 100, "early": 0, "wallet": "0x7c1b3a6d..."},
+  {"name": "ChonkVision", "held": 286, "wr": 100, "early": 8, "wallet": "0x676c1bb6..."},
+  {"name": "toottoot", "held": 272, "wr": 100, "early": 28, "wallet": "0x8ed5028e..."},
+  {"name": "misterblobby", "held": 262, "wr": 100, "early": 38, "wallet": "0x97cc0cd3..."},
+  {"name": "Eager47259", "held": 260, "wr": 100, "early": 39, "wallet": "0xab155a20..."},
+  {"name": "keeptheblueflagflyinghigh", "held": 227, "wr": 100, "early": 73, "wallet": "0x0d6a1ada..."},
+  {"name": "HomeRunHazard", "held": 128, "wr": 100, "early": 18, "wallet": "0x52685279..."},
+  {"name": "xtxpleasecallme", "held": 118, "wr": 100, "early": 149, "wallet": "0xad5353af..."},
+  {"name": "LightParadox", "held": 156, "wr": 100, "early": 144, "wallet": "0x051adea0..."},
+  {"name": "VeryLucky888", "held": 129, "wr": 100, "early": 16, "wallet": "0x6d3c5bd1..."}
 ];
 
 const tbody = document.querySelector("#traders tbody");
@@ -84,9 +86,13 @@ realTraders.forEach((t, i) => {
 });
 
 document.getElementById("shared-markets").innerHTML = `
-  <div class="market-card"><strong>5 traders</strong> — Pistons vs. Magic: O/U 212.5</div>
-  <div class="market-card"><strong>5 traders</strong> — Will Aston Villa FC win on 2026-11-24?</div>
-  <div class="market-card"><strong>4 traders</strong> — Celtics vs. Wizards</div>
+  <div class="market-card"><span>Manchester City FC vs. SSC Napoli: O/U 3.5</span><strong>5 traders</strong></div>
+  <div class="market-card"><span>Spread: Real Betis Balompié (-1.5)</span><strong>5 traders</strong></div>
+  <div class="market-card"><span>Will Arsenal FC win on 2026-11-24?</span><strong>5 traders</strong></div>
+  <div class="market-card"><span>Will Norwich City FC win on 2026-11-24?</span><strong>4 traders</strong></div>
+  <div class="market-card"><span>Will San Jose Earthquakes win on 2026-11-24?</span><strong>4 traders</strong></div>
+  <div class="market-card"><span>Spread: Real Madrid CF (-2.5)</span><strong>4 traders</strong></div>
+  <div class="market-card"><span>Pistons vs. Magic: O/U 213.5</span><strong>4 traders</strong></div>
 `;
 </script>
 </body>
